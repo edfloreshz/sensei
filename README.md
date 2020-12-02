@@ -4,7 +4,7 @@ Sensei is a simple command line tool to open documentation for any crate in crat
 ## Usage 
 
 ```
-sensei <crate>
+sensei <crate> -v <version>
 ```
 
 #### Flags

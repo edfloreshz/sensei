@@ -116,6 +116,7 @@ fn first_letter_to_uppercase(c: String) -> String {
     }
 }
 
+/// Gets the latest version of a specified crate.
 fn get_crate_latest_version(crt: &String) -> Result<String, Error> {
     let uri = &*format!("https://crates.io/api/v1/crates/{}", crt);
     let mut response = isahc::get(uri)?;

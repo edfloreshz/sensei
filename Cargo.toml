@@ -3,6 +3,12 @@ name = "sensei"
 version = "0.1.0"
 authors = ["Eduardo Flores <edfloreshz@gmail.com>"]
 edition = "2018"
+license = "GPL-2.0"
+description = "Sensei is a simple command line tool to open documentation for any crate."
+homepage = "https://github.com/edfloreshz/sensei/blob/main/README.md"
+documentation = "https://docs.rs/sensei"
+repository = "https://github.com/edfloreshz/sensei/"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

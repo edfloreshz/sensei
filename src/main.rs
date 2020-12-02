@@ -1,7 +1,17 @@
-extern crate clap;
 use clap::{Arg, App};
 use webbrowser;
 
+/// Opens the requested crate's documentation in the web browser.
+    ///
+    /// # Arguments
+    ///
+    /// * `crate` - A string with the crate.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// $ sensei serde
+    /// ```
 fn main() {
     let matches = App::new("Sensei")
         .version("0.1.0")

@@ -18,14 +18,14 @@
     <div class="container">
         <div class="logo">
             <div class="cover">
-                <img src="assets/cover.png" alt="sushi" class="sushi">
+                <img src="assets/cover.svg" alt="sushi" class="sushi">
             </div>
             <div class="disco">
                 <img src="assets/disco.svg" alt="disco" class="vinil">
             </div>
         </div>
 
-        <h1>Sensei (先生)</h1>
+        <h1>SENSEI (先生)</h1>
         <div class="readme">
             <div>
                 Sensei is a simple command line tool to open documentation for any crate in crates.io.
@@ -34,27 +34,31 @@
         <div class="install">
             <h3>How to install?</h3>
             <code>cargo install sensei</code>
-        </div>
+            <br><br>
 
+        </div>
         <div class="flags">
-            <div>
-                <h3>Usage</h3>
-                <code>sensei crate</code>
-                <h4>Flags</h4>
-                <code>-v version</code> <br> <br>
-                <code> -s query</code>
-            </div>
-            <div>
-                <h3>Flags</h3>
-                <div class="code">
-                    <code>-h, --help Prints help information</code> <br> <br>
-                    <code> -V, --version Prints version information</code>
+            <small>
+                <div>
+                    <h4>Usage</h4>
+                    <code>sensei &ltcrate&gt</code>
+                    <h4>Options</h4>
+                    <code>-v &ltversion&gt</code> <br><br>
+                    Opens documentation for a specific version. <br> <br>
+                    <code> -s &ltquery&gt</code> <br> <br>
+                    Specifies query to search documentation.
                 </div>
-
-            </div>
+                <div>
+                    <h4>Flags</h4>
+                    <code>-h, --help</code> <br><br> Prints help information. <br> <br>
+                    <code> -V, --version</code> <br><br>  Prints version information.
+                </div>
+                <div>
+                    <h4>Example</h4>
+                    <code>sensei serde -v 0.8.8 -s Serialize</code>
+                </div>
+            </small>
         </div>
-
-
         <div class="push"></div>
     </div>
     <footer>

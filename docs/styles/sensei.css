@@ -5,12 +5,16 @@ html, body{
     background-color: white;
 }
 
+small {
+    font-size: .7em
+}
+
 footer {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: #161616;
+    background-color: #0F151C;
     color: white;
     text-align: center;
     font-family: 'Monserrat', sans-serif;
@@ -43,7 +47,7 @@ h1{
 }
 
 code {
-    background-color: #161616;
+    background-color: #0F151C;
     color: white;
     padding: 10px;
     border-radius: 10px;
@@ -90,7 +94,6 @@ code {
     .vinil{
         animation: disc 3s infinite linear; 
         transform-origin: center;
-        transform-box: fill-box;
         width: 60vw;
     }
 
@@ -108,7 +111,6 @@ code {
         transform-origin: center;
         min-width: 400px;
         width: 15vw;
-    
     }
 
     .sushi{

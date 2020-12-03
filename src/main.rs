@@ -1,8 +1,20 @@
-use clap::{App, Arg, SubCommand, ArgMatches};
+use clap::{App, Arg, ArgMatches, SubCommand};
 use isahc::{Error, ResponseExt};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use webbrowser;
+
+const PHRASES: [&str; 3] = ["幸運を", "よく学ぶ", "良い読書"];
+
+#[derive(Serialize, Deserialize)]
+struct Crate {
+    #[serde(rename = "crate")]
+    crate_: NewestVersion,
+}
+#[derive(Serialize, Deserialize)]
+struct NewestVersion {
+    newest_version: String,
+}
 
 struct CrateInfo {
     name: String,
@@ -20,18 +32,6 @@ impl CrateInfo {
     }
 }
 
-#[derive(Serialize, Deserialize)]
-struct Crate {
-    #[serde(rename = "crate")]
-    crate_: NewestVersion,
-}
-#[derive(Serialize, Deserialize)]
-struct NewestVersion {
-    newest_version: String,
-}
-
-const PHRASES: [&str; 3] = ["幸運を", "よく学ぶ", "良い読書"];
-
 /// Receives input from the user to process their request.
 ///
 /// # Arguments
@@ -42,7 +42,8 @@ const PHRASES: [&str; 3] = ["幸運を", "よく学ぶ", "良い読書"];
 ///
 /// ```
 /// $ sensei serde
-/// $ sensei serde 0.8.8
+/// $ sensei serde -v 0.8.8
+/// $ sensei serde -s Serializer
 /// ```
 fn main() {
     let matches = get_config();
@@ -57,7 +58,7 @@ fn main() {
 /// Creates an object of type ArgMatches with the structure of the CLI.
 fn get_config() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.1.0")
+        .version("0.1.5")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(

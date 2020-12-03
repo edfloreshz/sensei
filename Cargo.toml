@@ -1,6 +1,6 @@
 [package]
 name = "sensei"
-version = "0.1.9"
+version = "0.1.10"
 authors = ["Eduardo Flores <edfloreshz@gmail.com>"]
 edition = "2018"
 license = "GPL-2.0"

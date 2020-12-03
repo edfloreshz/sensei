@@ -1,4 +1,4 @@
-use clap::{App, Arg, ArgMatches, SubCommand};
+use clap::{App, Arg, ArgMatches};
 use rand::Rng;
 use webbrowser;
 
@@ -43,78 +43,53 @@ fn main() {
 /// Creates an object of type ArgMatches with the structure of the CLI.
 fn get_config() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.1.5")
+        .version("0.1.8")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
-        .arg(
-            Arg::with_name("crate")
-                .help("What crate do you need help with, 学生?")
+        .arg(Arg::with_name("crate")
+                 .help("What crate do you need help with, 学生?")
+                 .short("c")
+                 .long("crate")
                 .required(true)
                 .index(1),
         )
-        .subcommand(
-            SubCommand::with_name("-v")
-                .help("Flag used to specify a crate's version.")
-                .arg(Arg::with_name("ver").help("ver").takes_value(true))
-                .subcommand(
-                SubCommand::with_name("-s")
-                    .help("Used to specify a query.")
-                    .arg(
-                        Arg::with_name("query")
-                            .help("Query to be used for search.")
-                            .takes_value(true),
-                    ),
-            ),
+        .arg(Arg::with_name("version")
+            .help("Opens documentation for a specific version.")
+            .short("v")
+            .long("version")
+            .takes_value(true)
         )
-        .subcommand(
-            SubCommand::with_name("-s")
-                .help("Used to specify a query.")
-                .arg(
-                    Arg::with_name("query")
-                        .help("Query to be used for search.")
-                        .takes_value(true),
-                ),
+        .arg(Arg::with_name("query")
+                 .help("Specifies query to search documentation.")
+                 .short("q")
+                 .long("query")
+                 .takes_value(true),
         )
         .get_matches()
 }
 
 /// Checks arguments and executes the required actions.
 fn check_config(crt: &mut CrateInfo, matches: ArgMatches) {
-    if let Some(matches) = matches.subcommand_matches("-v") {
-        if matches.is_present("ver") {
-            crt.version = matches.value_of("ver").unwrap().parse().unwrap();
-            if let Some(matches) = matches.subcommand_matches("-s") {
-                if matches.is_present("query") {
-                    crt.query = matches.value_of("query").unwrap().parse().unwrap();
-                    let uri = format!("https://docs.rs/{}/{}/{}/?search={}",
-                                      crt.name, crt.version, crt.name, crt.query
-                    );
-                    open_url(uri, crt)
-                } else {
-                    println!("Please specify a query for this crate.");
-                }
-            } else {
-                if matches.is_present("ver") {
-                    crt.query = matches.value_of("ver").unwrap().parse().unwrap();
-                    let uri = format!("https://docs.rs/{}/{}/{}", crt.name, crt.version, crt.name);
-                    open_url(uri, crt)
-                } else {
-                    println!("Please specify a version for this crate.");
-                }
-            }
+    if matches.is_present("version") {
+        crt.version = matches.value_of("version").unwrap().parse().unwrap();
+    }
+    if matches.is_present("query") {
+        crt.query = matches.value_of("query").unwrap().parse().unwrap();
+    }
+    if crt.query.is_empty() && crt.version.is_empty() {
+        open_url(format!("https://docs.rs/{}", crt.name), crt)
+    } else {
+        if !crt.version.is_empty() && !crt.query.is_empty() {
+            open_url(format!(
+                "https://docs.rs/{}/{}/{}/?search={}",
+                crt.name, crt.version, crt.name, crt.query
+            ), crt)
+        } else if !crt.version.is_empty() {
+            open_url(format!("https://docs.rs/{}/{}/{}", crt.name, crt.version, crt.name), crt)
         } else {
-            println!("Please specify a version for this crate.");
-        }
-    } else if let Some(matches) = matches.subcommand_matches("-s") {
-        if matches.is_present("query") {
-            crt.query = matches.value_of("query").unwrap().parse().unwrap();
             let uri = format!("https://docs.rs/{}/?search={}", crt.name, crt.query);
             open_url(uri, crt)
-        } else {
-            println!("Please specify a query for this crate.");
         }
-    } else {
-        open_url(format!("https://docs.rs/{}", crt.name), crt)
     }
 }
 

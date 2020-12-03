@@ -30,6 +30,7 @@ sensei <crate> [OPTIONS]
 #### Flags
 ```
 -h, --help      Prints help information
+-l, --local    Tries to open local documentation.
 ``` 
 
 

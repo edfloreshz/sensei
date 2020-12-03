@@ -111,7 +111,7 @@ code {
 
 @media (min-width: 851px){
     .vinil{
-        animation: disc 3s infinite linear; 
+        animation: disc 4s infinite linear;
         transform-origin: center;
         min-width: 400px;
         width: 15vw;

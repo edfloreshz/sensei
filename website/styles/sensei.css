@@ -50,23 +50,7 @@ grid-template-rows */
   align-items: center;
 }
 
-.vinil{
-    animation: disc 3s infinite linear; 
-    transform-origin: center;
-    transform-box: fill-box;
-    
-    width: 15vw;
-  
-}
 
-.sushi{
-    position: absolute;
-  top: 50%; left: 50%;
-     width: 8.2vw;
-
-  transform: translate(-50%,-50%);
-
-}
 
 @keyframes disc {
     form {
@@ -89,16 +73,39 @@ grid-template-rows */
         animation: disc 3s infinite linear; 
         transform-origin: center;
         transform-box: fill-box;
-        
         width: 60vw;
-    
     }
 
     .sushi{
         position: absolute;
     top: 50%; left: 50%;
         width: 32vw;
+    transform: translate(-50%,-50%);
+    }
+}
 
+
+
+
+@media (min-width: 851px){
+ 
+
+    .vinil{
+        animation: disc 3s infinite linear; 
+        transform-origin: center;
+        transform-box: fill-box;
+
+        min-width: 400px;
+        width: 15vw;
+    
+    }
+
+    .sushi{
+        position: absolute;
+    top: 50%; left: 50%;
+        width: 8.2vw;
+
+        min-width: 220px;
     transform: translate(-50%,-50%);
 
     }

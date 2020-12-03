@@ -48,7 +48,7 @@ fn main() {
 /// Creates an object of type ArgMatches with the structure of the CLI.
 fn get_config() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.1.8")
+        .version("0.1.9")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(Arg::with_name("crate")

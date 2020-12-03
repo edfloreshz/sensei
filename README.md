@@ -36,5 +36,5 @@ sensei <crate> [OPTIONS]
 
 #### Example
 ```
-sensei serde -v 0.8.8 -s Serialize 
+sensei serde -v 0.8.8 -q Serialize 
 ```

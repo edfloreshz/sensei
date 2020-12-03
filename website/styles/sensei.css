@@ -1,9 +1,78 @@
 body{
     margin: 0;
     padding: 0;
-    background-color: #aa3a3a;
+    background-color: white;
 }
 .container {
     display: grid;
+    grid-template-rows: 1;
+    grid-template-columns: 1;
+    align-items: center;
+    text-align: center;
+    font-family: 'Monserrat', sans-serif;
+    font-size: 1.5rem;
+    color: black;
+}
 
+
+h1{
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.logo{
+    background-color: white;
+    display: grid;
+  
+}
+ /* grid-template-columns
+grid-template-rows */
+
+
+@media (max-width: 600px){
+ 
+     
+}
+
+.cover{
+    z-index: 3;
+     text-align: center;
+    vertical-align: middle;
+    position: relative;
+}
+
+.cover, .disco{
+    grid-area: 1/1;
+}
+
+.disco{
+    position: relative;
+      transform: translate(0%,0%);
+      display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vinil{
+    animation: disc 3s infinite linear; 
+    transform-origin: center;
+    transform-box: fill-box;
+    
+
+}
+
+.sushi{
+    position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+
+}
+
+@keyframes disc {
+    form {
+        transform: rotateZ(360deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
 }

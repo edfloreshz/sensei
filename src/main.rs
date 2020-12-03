@@ -8,15 +8,20 @@ struct CrateInfo {
     name: String,
     version: String,
     query: String,
+    url: String
 }
 
 impl CrateInfo {
-    fn new(name: String, version: String, query: String) -> CrateInfo {
+    fn new(name: String, version: String, query: String, url: String) -> CrateInfo {
         CrateInfo {
             name,
             version,
             query,
+            url,
         }
+    }
+    fn is_std(&self) -> bool {
+        self.name == "std"
     }
 }
 
@@ -36,7 +41,7 @@ impl CrateInfo {
 fn main() {
     let matches = get_config();
     let name = matches.value_of("crate").unwrap().into();
-    let mut crt = CrateInfo::new(name, String::new(), String::new());
+    let mut crt = CrateInfo::new(name, String::new(), String::new(), String::new());
     check_config(&mut crt, matches);
 }
 
@@ -77,18 +82,31 @@ fn check_config(crt: &mut CrateInfo, matches: ArgMatches) {
         crt.query = matches.value_of("query").unwrap().parse().unwrap();
     }
     if crt.query.is_empty() && crt.version.is_empty() {
-        open_url(format!("https://docs.rs/{}", crt.name), crt)
+        crt.url = format!("https://docs.rs/{}", crt.name);
+        open_url(crt.url.clone(), crt)
     } else {
         if !crt.version.is_empty() && !crt.query.is_empty() {
-            open_url(format!(
-                "https://docs.rs/{}/{}/{}/?search={}",
-                crt.name, crt.version, crt.name, crt.query
-            ), crt)
+            crt.url = if crt.is_std() {
+                format!("https://doc.rust-lang.org/{}/std/index.html?search={}", crt.version, crt.query)
+            } else {
+                format!("https://docs.rs/{}/{}/{}/?search={}",
+                    crt.name, crt.version, crt.name, crt.query)
+            };
+            open_url(crt.url.clone(), crt)
         } else if !crt.version.is_empty() {
-            open_url(format!("https://docs.rs/{}/{}/{}", crt.name, crt.version, crt.name), crt)
+            crt.url = if crt.is_std() {
+                format!("https://doc.rust-lang.org/{}/std/index.html", crt.version)
+            } else {
+                format!("https://docs.rs/{}/{}/{}", crt.name, crt.version, crt.name)
+            };
+            open_url(crt.url.clone(), crt)
         } else {
-            let uri = format!("https://docs.rs/{}/?search={}", crt.name, crt.query);
-            open_url(uri, crt)
+            crt.url = if crt.is_std() {
+                format!("https://doc.rust-lang.org/std/index.html?search={}", crt.query)
+            } else {
+                format!("https://docs.rs/{}/?search={}", crt.name, crt.query)
+            };
+            open_url(crt.url.clone(), crt)
         }
     }
 }
@@ -99,12 +117,20 @@ fn open_url(url: String, crt: &CrateInfo) {
         println!("Seems like you've lost your way, 学生, try again.");
     } else {
         let mut rng = rand::thread_rng();
-        println!(
-            "||| The Book Of {} {}|||\n\n{}",
-            first_letter_to_uppercase(crt.name.clone()),
-            format!("{} ", &crt.version),
-            PHRASES[rng.gen_range(0, 2)]
-        )
+        if crt.is_std() {
+            println!(
+                "||| The Standard Library {}|||\n\n{}",
+                format!("{} ", &crt.version),
+                PHRASES[rng.gen_range(0, 2)]
+            )
+        } else {
+            println!(
+                "||| The Book Of {} {}|||\n\n{}",
+                first_letter_to_uppercase(crt.name.clone()),
+                format!("{} ", &crt.version),
+                PHRASES[rng.gen_range(0, 2)]
+            )
+        }
     }
 }
 

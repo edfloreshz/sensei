@@ -81,6 +81,10 @@ code {
   align-items: center;
 }
 
+.space {
+    line-height: 40px;
+}
+
 @keyframes disc {
     form {
         transform: rotateZ(360deg);

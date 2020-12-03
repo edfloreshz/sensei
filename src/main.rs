@@ -70,7 +70,16 @@ fn get_config() -> ArgMatches<'static> {
         .subcommand(
             SubCommand::with_name("-v")
                 .help("Flag used to specify a crate's version.")
-                .arg(Arg::with_name("ver").help("ver").takes_value(true)),
+                .arg(Arg::with_name("ver").help("ver").takes_value(true))
+                .subcommand(
+                SubCommand::with_name("-s")
+                    .help("Used to specify a query.")
+                    .arg(
+                        Arg::with_name("query")
+                            .help("Query to be used for search.")
+                            .takes_value(true),
+                    ),
+            ),
         )
         .subcommand(
             SubCommand::with_name("-s")
@@ -89,20 +98,33 @@ fn check_config(crt: &mut CrateInfo, matches: ArgMatches) {
     if let Some(matches) = matches.subcommand_matches("-v") {
         if matches.is_present("ver") {
             crt.version = matches.value_of("ver").unwrap().parse().unwrap();
-            open_url(
-                format!("https://docs.rs/{}/{}/{}", crt.name, crt.version, crt.name),
-                crt,
-            )
+            if let Some(matches) = matches.subcommand_matches("-s") {
+                if matches.is_present("query") {
+                    crt.query = matches.value_of("query").unwrap().parse().unwrap();
+                    let uri = format!("https://docs.rs/{}/{}/{}/?search={}",
+                                      crt.name, crt.version, crt.name, crt.query
+                    );
+                    open_url(uri, crt)
+                } else {
+                    println!("Please specify a query for this crate.");
+                }
+            } else {
+                if matches.is_present("ver") {
+                    crt.query = matches.value_of("ver").unwrap().parse().unwrap();
+                    let uri = format!("https://docs.rs/{}/{}/{}", crt.name, crt.version, crt.name);
+                    open_url(uri, crt)
+                } else {
+                    println!("Please specify a version for this crate.");
+                }
+            }
         } else {
             println!("Please specify a version for this crate.");
         }
     } else if let Some(matches) = matches.subcommand_matches("-s") {
         if matches.is_present("query") {
             crt.query = matches.value_of("query").unwrap().parse().unwrap();
-            open_url(
-                format!("https://docs.rs/{}/?search={}", crt.name, crt.query),
-                crt,
-            )
+            let uri = format!("https://docs.rs/{}/?search={}", crt.name, crt.query);
+            open_url(uri, crt)
         } else {
             println!("Please specify a query for this crate.");
         }

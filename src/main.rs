@@ -1,4 +1,4 @@
-use clap::{App, Arg, SubCommand};
+use clap::{App, Arg, SubCommand, ArgMatches};
 use isahc::{Error, ResponseExt};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -8,6 +8,16 @@ struct CrateInfo {
     name: String,
     version: String,
     query: String,
+}
+
+impl CrateInfo {
+    fn new(name: String, version: String, query: String) -> CrateInfo {
+        CrateInfo {
+            name,
+            version,
+            query,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -35,7 +45,18 @@ const PHRASES: [&str; 3] = ["幸運を", "よく学ぶ", "良い読書"];
 /// $ sensei serde 0.8.8
 /// ```
 fn main() {
-    let matches = App::new("Sensei")
+    let matches = get_config();
+    let name = matches.value_of("crate").unwrap().into();
+    let version = get_latest_version(&matches.value_of("crate").unwrap().to_string())
+        .unwrap()
+        .into();
+    let mut crt = CrateInfo::new(name, version, String::new());
+    check_config(&mut crt, matches);
+}
+
+/// Creates an object of type ArgMatches with the structure of the CLI.
+fn get_config() -> ArgMatches<'static> {
+    App::new("Sensei")
         .version("0.1.0")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
@@ -59,15 +80,11 @@ fn main() {
                         .takes_value(true),
                 ),
         )
-        .get_matches();
+        .get_matches()
+}
 
-    let mut crt = CrateInfo {
-        name: matches.value_of("crate").unwrap().into(),
-        version: get_crate_latest_version(&matches.value_of("crate").unwrap().to_string())
-            .unwrap()
-            .into(),
-        query: "".into(),
-    };
+/// Checks arguments and executes the required actions.
+fn check_config(crt: &mut CrateInfo, matches: ArgMatches) {
     if let Some(matches) = matches.subcommand_matches("-v") {
         if matches.is_present("ver") {
             crt.version = matches.value_of("ver").unwrap().parse().unwrap();
@@ -94,17 +111,17 @@ fn main() {
 }
 
 /// Opens the requested crate's documentation in the web browser.
-fn open_url(url: String, crt: CrateInfo) {
-    if webbrowser::open(&*url).is_ok() {
+fn open_url(url: String, crt: &CrateInfo) {
+    if !(webbrowser::open(&*url).is_ok()) {
+        println!("Seems like you've lost your way, 学生, try again.");
+    } else {
         let mut rng = rand::thread_rng();
         println!(
             "||| The Book Of {} v{} |||\n\n{}",
-            first_letter_to_uppercase(crt.name),
+            first_letter_to_uppercase(crt.name.clone()),
             crt.version,
             PHRASES[rng.gen_range(0, 2)]
         )
-    } else {
-        println!("Seems like you've lost your way, 学生, try again.");
     }
 }
 
@@ -117,7 +134,7 @@ fn first_letter_to_uppercase(c: String) -> String {
 }
 
 /// Gets the latest version of a specified crate.
-fn get_crate_latest_version(crt: &String) -> Result<String, Error> {
+fn get_latest_version(crt: &String) -> Result<String, Error> {
     let uri = &*format!("https://crates.io/api/v1/crates/{}", crt);
     let mut response = isahc::get(uri)?;
     let json = response.text()?;

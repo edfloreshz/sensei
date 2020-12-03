@@ -1,39 +1,66 @@
-body{
+html, body{
     margin: 0;
     padding: 0;
+    height: 100%;
     background-color: white;
 }
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #161616;
+    color: white;
+    text-align: center;
+    font-family: 'Monserrat', sans-serif;
+    font-weight: bold;
+}
+
+a {
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 5px;
+    padding: 5px;
+    color: #ffffff;
+    text-decoration: none;
+    margin: 10px;
+}
+
 .container {
     display: grid;
-    grid-template-rows: 1;
-    grid-template-columns: 1;
     align-items: center;
     text-align: center;
     font-family: 'Monserrat', sans-serif;
     font-size: 1.5rem;
     color: black;
+    margin-bottom: -50px;
+    min-height: 100%;
 }
-
 
 h1{
     font-family: 'Montserrat', sans-serif;
 }
 
+code {
+    background-color: #161616;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.push {
+    height: 100px;
+}
 
 .logo{
     background-color: white;
     display: grid;
-  
 }
- /* grid-template-columns
-grid-template-rows */
-
-
-
 
 .cover{
     z-index: 3;
-     text-align: center;
+    text-align: center;
     vertical-align: middle;
     position: relative;
 }
@@ -50,8 +77,6 @@ grid-template-rows */
   align-items: center;
 }
 
-
-
 @keyframes disc {
     form {
         transform: rotateZ(360deg);
@@ -61,14 +86,7 @@ grid-template-rows */
     }
 }
 
-
-
-
-
-
 @media (max-width: 850px){
- 
-
     .vinil{
         animation: disc 3s infinite linear; 
         transform-origin: center;
@@ -78,23 +96,16 @@ grid-template-rows */
 
     .sushi{
         position: absolute;
-    top: 50%; left: 50%;
+        top: 50%; left: 50%;
         width: 32vw;
-    transform: translate(-50%,-50%);
+        transform: translate(-50%,-50%);
     }
 }
 
-
-
-
 @media (min-width: 851px){
- 
-
     .vinil{
         animation: disc 3s infinite linear; 
         transform-origin: center;
-        transform-box: fill-box;
-
         min-width: 400px;
         width: 15vw;
     
@@ -102,11 +113,9 @@ grid-template-rows */
 
     .sushi{
         position: absolute;
-    top: 50%; left: 50%;
+        top: 50%; left: 50%;
         width: 8.2vw;
-
         min-width: 220px;
-    transform: translate(-50%,-50%);
-
+        transform: translate(-50%,-50%);
     }
 }

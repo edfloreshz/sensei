@@ -1,20 +1,8 @@
 use clap::{App, Arg, ArgMatches, SubCommand};
-use isahc::{Error, ResponseExt};
 use rand::Rng;
-use serde::{Deserialize, Serialize};
 use webbrowser;
 
 const PHRASES: [&str; 3] = ["幸運を", "よく学ぶ", "良い読書"];
-
-#[derive(Serialize, Deserialize)]
-struct Crate {
-    #[serde(rename = "crate")]
-    crate_: NewestVersion,
-}
-#[derive(Serialize, Deserialize)]
-struct NewestVersion {
-    newest_version: String,
-}
 
 struct CrateInfo {
     name: String,
@@ -48,10 +36,7 @@ impl CrateInfo {
 fn main() {
     let matches = get_config();
     let name = matches.value_of("crate").unwrap().into();
-    let version = get_latest_version(&matches.value_of("crate").unwrap().to_string())
-        .unwrap()
-        .into();
-    let mut crt = CrateInfo::new(name, version, String::new());
+    let mut crt = CrateInfo::new(name, String::new(), String::new());
     check_config(&mut crt, matches);
 }
 
@@ -140,9 +125,9 @@ fn open_url(url: String, crt: &CrateInfo) {
     } else {
         let mut rng = rand::thread_rng();
         println!(
-            "||| The Book Of {} v{} |||\n\n{}",
+            "||| The Book Of {} {}|||\n\n{}",
             first_letter_to_uppercase(crt.name.clone()),
-            crt.version,
+            format!("{} ", &crt.version),
             PHRASES[rng.gen_range(0, 2)]
         )
     }
@@ -154,13 +139,4 @@ fn first_letter_to_uppercase(c: String) -> String {
         None => String::new(),
         Some(f) => f.to_uppercase().collect::<String>() + &c[1..],
     }
-}
-
-/// Gets the latest version of a specified crate.
-fn get_latest_version(crt: &String) -> Result<String, Error> {
-    let uri = &*format!("https://crates.io/api/v1/crates/{}", crt);
-    let mut response = isahc::get(uri)?;
-    let json = response.text()?;
-    let c: Crate = serde_json::from_str(&*json).unwrap();
-    Ok(c.crate_.newest_version)
 }

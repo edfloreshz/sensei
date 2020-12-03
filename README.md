@@ -17,20 +17,19 @@ cargo install sensei
 ## Usage 
 
 ```
-sensei <crate> 
+sensei <crate> [OPTIONS]
 ```
 
 #### Options
 
 ```
--v <version>    Opens documentation for a specific version. 
--s <query>      Specifies query to search documentation. 
+-v, --version <version>    Opens documentation for a specific version. 
+-q, --query <query>      Specifies query to search documentation. 
 ```
 
 #### Flags
 ```
 -h, --help      Prints help information
--V, --version   Prints version information
 ``` 
 
 

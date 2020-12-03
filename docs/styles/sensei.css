@@ -117,7 +117,7 @@ code {
         position: absolute;
         top: 50%; left: 50%;
         width: 8.2vw;
-        min-width: 220px;
+        min-width: 216px;
         transform: translate(-50%,-50%);
     }
 }

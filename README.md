@@ -17,7 +17,7 @@ cargo install sensei
 ## Usage 
 
 ```
-sensei <crate> [OPTIONS]
+sensei <crate> [OPTIONS] [FLAGS]
 ```
 
 #### Options

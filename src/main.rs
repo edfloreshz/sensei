@@ -138,30 +138,24 @@ impl CrateInfo {
         } else {
             self.url = if self.is_std() {
                 self.url = "https://doc.rust-lang.org".into();
-                let path = "std/index.html";
-                if !self.version.is_empty() && !self.query.is_empty() {
-                    format!(
-                        "{}/{}/{}?search={}",
-                        self.url, self.version, path, self.query
-                    )
-                } else if !self.version.is_empty() {
-                    format!("{}/{}/{}", self.url, self.version, path)
-                } else {
-                    format!("{}/{}?search={}", self.url, path, self.query)
-                }
+                self.format_url("", "index.html", "std")
             } else {
                 self.url = "https://docs.rs".into();
-                if !self.version.is_empty() && !self.query.is_empty() {
-                    format!(
-                        "{}/{}/{}/{}/?search={}",
-                        self.url, self.name, self.version, self.name, self.query
-                    )
-                } else if !self.version.is_empty() {
-                    format!("{}/{}/{}/{}", self.url, self.name, self.version, self.name)
-                } else {
-                    format!("{}/{}/?search={}", self.url, self.name, self.query)
-                }
+                self.format_url(&*format!("{}/", &*self.name), "", "")
             }
+        }
+    }
+    /// Formats the url.
+    fn format_url(&self, crate_name: &str, index_file: &str, stdlib: &str) -> String {
+        if !self.version.is_empty() && !self.query.is_empty() {
+            format!(
+                "{}/{}{}/{}/{}?search={}",
+                self.url, crate_name, self.version, self.name, index_file, self.query
+            )
+        } else if !self.version.is_empty() {
+            format!("{}/{}{}/{}/{}", self.url, crate_name, self.version, stdlib, index_file)
+        } else {
+            format!("{}/{}{}/{}?search={}", self.url, crate_name, stdlib, index_file, self.query)
         }
     }
     /// Checks if the crate is The Standard Library.

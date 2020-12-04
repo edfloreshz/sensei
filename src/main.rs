@@ -6,7 +6,7 @@ use std::process::exit;
 use webbrowser;
 
 /// Array with phrases to print at the end of the program.
-const PHRASES: [&str; 3] = ["幸運を", "よく学ぶ", "良い読書"];
+const PHRASES: [&str; 4] = ["幸運を", "よく学ぶ", "良い読書", "良書"];
 
 /// Structure with information about the crate.
 struct CrateInfo {
@@ -138,7 +138,7 @@ impl CrateInfo {
         } else {
             self.url = if self.is_std() {
                 self.url = "https://doc.rust-lang.org".into();
-                self.format_url("", "std", "index.html")
+                self.format_url("", "std", "/index.html")
             } else {
                 self.url = "https://docs.rs".into();
                 self.format_url(&*format!("{}/", &*self.name), "", "")
@@ -149,17 +149,17 @@ impl CrateInfo {
     fn format_url(&self, crate_name: &str, stdlib: &str, index_file: &str) -> String {
         if !self.version.is_empty() && !self.query.is_empty() {
             format!(
-                "{}/{}{}/{}/{}?search={}",
+                "{}/{}{}/{}{}?search={}",
                 self.url, crate_name, self.version, self.name, index_file, self.query
             )
         } else if !self.version.is_empty() {
             format!(
-                "{}/{}{}/{}/{}",
+                "{}/{}{}/{}{}",
                 self.url, crate_name, self.version, stdlib, index_file
             )
         } else {
             format!(
-                "{}/{}{}/{}?search={}",
+                "{}/{}{}{}?search={}",
                 self.url, crate_name, stdlib, index_file, self.query
             )
         }
@@ -186,18 +186,18 @@ impl CrateInfo {
             if self.is_std() {
                 println!(
                     "\x1B[32m\n{} ||| The Standard Library {}||| {}\n{}\x1B[32m",
-                    PHRASES[rng.gen_range(0, 2)],
+                    PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
                     format!("{}", self.version),
-                    PHRASES[rng.gen_range(0, 2)],
+                    PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
                     self.warning
                 )
             } else {
                 println!(
                     "\x1B[32m\n{} ||| The Book Of {} {}||| {}\n{}\x1B[32m",
-                    PHRASES[rng.gen_range(0, 2)],
+                    PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
                     first_letter_to_uppercase(self.name.clone()),
                     format!("{} ", self.version),
-                    PHRASES[rng.gen_range(0, 2)],
+                    PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
                     self.warning
                 )
             }
@@ -211,13 +211,15 @@ impl CrateInfo {
             "{}/target/doc/{}/index.html",
             env::current_dir().unwrap().to_str().unwrap(),
             self.name
-        )).is_ok() {
+        ))
+        .is_ok()
+        {
             let mut rng = rand::thread_rng();
             println!(
                 "\x1B[32m\n{} ||| The Book Of {}||| {}\n{}\x1B[32m",
-                PHRASES[rng.gen_range(0, 2)],
+                PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
                 first_letter_to_uppercase(self.name.clone()),
-                PHRASES[rng.gen_range(0, 2)],
+                PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
                 self.warning
             );
             exit(0)

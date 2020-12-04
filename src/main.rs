@@ -45,37 +45,31 @@ impl CrateInfo {
             self.query = matches.value_of("query").unwrap().parse().unwrap();
         }
     }
-    /// Constructs the url
+    /// Constructs the url.
     fn construct_url(&mut self) {
         if self.query.is_empty() && self.version.is_empty() {
             self.url = format!("https://docs.rs/{}", self.name);
-        } else if !self.version.is_empty() && !self.query.is_empty() {
-            self.url = if self.is_std() {
-                format!(
-                    "https://doc.rust-lang.org/{}/std/index.html?search={}",
-                    self.version, self.query
-                )
-            } else {
-                format!(
-                    "https://docs.rs/{}/{}/{}/?search={}",
-                    self.name, self.version, self.name, self.query
-                )
-            };
-        } else if !self.version.is_empty() {
-            self.url = if self.is_std() {
-                format!("https://doc.rust-lang.org/{}/std/index.html", self.version)
-            } else {
-                format!("https://docs.rs/{}/{}/{}", self.name, self.version, self.name)
-            };
         } else {
             self.url = if self.is_std() {
-                format!(
-                    "https://doc.rust-lang.org/std/index.html?search={}",
-                    self.query
-                )
+                self.url = "https://doc.rust-lang.org".into();
+                let path = "std/index.html";
+                if !self.version.is_empty() && !self.query.is_empty() {
+                    format!("{}/{}/{}?search={}", self.url, self.version, path, self.query)
+                } else if !self.version.is_empty() {
+                    format!("{}/{}/{}", self.url, self.version, path)
+                } else {
+                    format!("{}/{}?search={}", self.url, path, self.query)
+                }
             } else {
-                format!("https://docs.rs/{}/?search={}", self.name, self.query)
-            };
+                self.url = "https://docs.rs".into();
+                if !self.version.is_empty() && !self.query.is_empty() {
+                    format!("{}/{}/{}/{}/?search={}", self.url, self.name, self.version, self.name, self.query)
+                } else if !self.version.is_empty() {
+                    format!("{}/{}/{}/{}", self.url, self.name, self.version, self.name)
+                } else {
+                    format!("{}/{}/?search={}", self.url, self.name, self.query)
+                }
+            }
         }
     }
     /// Checks if the crate is The Standard Library.

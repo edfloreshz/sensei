@@ -28,6 +28,56 @@ impl CrateInfo {
             warning: String::new(),
         }
     }
+    /// Assigns arguments to the structure.
+    fn get_args(&mut self, matches: ArgMatches) {
+        if matches.is_present("local") {
+            if matches.is_present("version") || matches.is_present("query") {
+                self.warning = "Versioning and querying is not available with local crates.".into();
+            }
+            if self.is_local() {
+                self.open_locally()
+            }
+        }
+        if matches.is_present("version") {
+            self.version = matches.value_of("version").unwrap().parse().unwrap();
+        }
+        if matches.is_present("query") {
+            self.query = matches.value_of("query").unwrap().parse().unwrap();
+        }
+    }
+    /// Constructs the url
+    fn construct_url(&mut self) {
+        if self.query.is_empty() && self.version.is_empty() {
+            self.url = format!("https://docs.rs/{}", self.name);
+        } else if !self.version.is_empty() && !self.query.is_empty() {
+            self.url = if self.is_std() {
+                format!(
+                    "https://doc.rust-lang.org/{}/std/index.html?search={}",
+                    self.version, self.query
+                )
+            } else {
+                format!(
+                    "https://docs.rs/{}/{}/{}/?search={}",
+                    self.name, self.version, self.name, self.query
+                )
+            };
+        } else if !self.version.is_empty() {
+            self.url = if self.is_std() {
+                format!("https://doc.rust-lang.org/{}/std/index.html", self.version)
+            } else {
+                format!("https://docs.rs/{}/{}/{}", self.name, self.version, self.name)
+            };
+        } else {
+            self.url = if self.is_std() {
+                format!(
+                    "https://doc.rust-lang.org/std/index.html?search={}",
+                    self.query
+                )
+            } else {
+                format!("https://docs.rs/{}/?search={}", self.name, self.query)
+            };
+        }
+    }
     /// Checks if the crate is The Standard Library.
     fn is_std(&self) -> bool {
         self.name == "std"
@@ -118,16 +168,15 @@ impl CrateInfo {
 /// $ sensei serde -v 0.8.8 - q Serializer
 /// ```
 fn main() {
-    let matches = get_config();
-    let name: String = matches.value_of("crate").unwrap().into();
-    let mut crt = CrateInfo::new(name);
+    let matches = make_config();
+    let mut crt = CrateInfo::new(matches.value_of("crate").unwrap().into());
     check_config(&mut crt, matches);
 }
 
 /// Creates an object of type ArgMatches with the structure of the CLI.
-fn get_config() -> ArgMatches<'static> {
+fn make_config() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.1.11")
+        .version("0.1.12")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(
@@ -163,52 +212,8 @@ fn get_config() -> ArgMatches<'static> {
 
 /// Checks arguments and executes the required actions.
 fn check_config(crt: &mut CrateInfo, matches: ArgMatches) {
-    if matches.is_present("local") {
-        if matches.is_present("version") || matches.is_present("query") {
-            crt.warning = "Versioning and querying is not available with local crates.".into();
-        }
-        if crt.is_local() {
-            crt.open_locally()
-        }
-    }
-    if matches.is_present("version") {
-        crt.version = matches.value_of("version").unwrap().parse().unwrap();
-    }
-    if matches.is_present("query") {
-        crt.query = matches.value_of("query").unwrap().parse().unwrap();
-    }
-    if crt.query.is_empty() && crt.version.is_empty() {
-        crt.url = format!("https://docs.rs/{}", crt.name);
-    } else {
-        if !crt.version.is_empty() && !crt.query.is_empty() {
-            crt.url = if crt.is_std() {
-                format!(
-                    "https://doc.rust-lang.org/{}/std/index.html?search={}",
-                    crt.version, crt.query
-                )
-            } else {
-                format!(
-                    "https://docs.rs/{}/{}/{}/?search={}",
-                    crt.name, crt.version, crt.name, crt.query
-                )
-            };
-        } else if !crt.version.is_empty() {
-            crt.url = if crt.is_std() {
-                format!("https://doc.rust-lang.org/{}/std/index.html", crt.version)
-            } else {
-                format!("https://docs.rs/{}/{}/{}", crt.name, crt.version, crt.name)
-            };
-        } else {
-            crt.url = if crt.is_std() {
-                format!(
-                    "https://doc.rust-lang.org/std/index.html?search={}",
-                    crt.query
-                )
-            } else {
-                format!("https://docs.rs/{}/?search={}", crt.name, crt.query)
-            };
-        }
-    }
+    crt.get_args(matches);
+    crt.construct_url();
     crt.open();
 }
 

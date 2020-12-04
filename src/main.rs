@@ -27,7 +27,7 @@ struct CrateInfo {
 ///
 /// ```
 /// -q, --query <query>        Specifies query to search documentation.
-//  -v, --version <version>    Opens documentation for a specific version.
+///  -v, --version <version>    Opens documentation for a specific version.
 /// ```
 ///
 /// # Flags

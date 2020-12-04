@@ -187,18 +187,20 @@ impl CrateInfo {
             let mut rng = rand::thread_rng();
             if self.is_std() {
                 println!(
-                    "||| The Standard Library {}|||\n{}\n{}",
+                    "\x1B[32m\n{} ||| The Standard Library {}||| {}\n{}\x1B[32m",
+                    PHRASES[rng.gen_range(0, 2)],
                     format!("{}", self.version),
-                    self.warning,
-                    PHRASES[rng.gen_range(0, 2)]
+                    PHRASES[rng.gen_range(0, 2)],
+                    self.warning
                 )
             } else {
                 println!(
-                    "||| The Book Of {} {}|||\n{}\n{}",
+                    "\x1B[32m\n{} ||| The Book Of {} {}||| {}\n{}\x1B[32m",
+                    PHRASES[rng.gen_range(0, 2)],
                     first_letter_to_uppercase(self.name.clone()),
                     format!("{} ", self.version),
-                    self.warning,
-                    PHRASES[rng.gen_range(0, 2)]
+                    PHRASES[rng.gen_range(0, 2)],
+                    self.warning
                 )
             }
         }
@@ -214,11 +216,11 @@ impl CrateInfo {
         {
             let mut rng = rand::thread_rng();
             println!(
-                "||| The Book Of {} {}|||\n{}\n{}",
+                "\x1B[32m\n{} ||| The Book Of {}||| {}\n{}\x1B[32m",
+                PHRASES[rng.gen_range(0, 2)],
                 first_letter_to_uppercase(self.name.clone()),
-                format!("{} ", self.version),
-                self.warning,
-                PHRASES[rng.gen_range(0, 2)]
+                PHRASES[rng.gen_range(0, 2)],
+                self.warning
             );
             exit(0)
         }

@@ -181,9 +181,7 @@ impl CrateInfo {
     }
     /// Opens the crate's documentation.
     fn open(&self) {
-        if !(webbrowser::open(&*self.url).is_ok()) {
-            println!("Seems like you've lost your way, 学生, try again.");
-        } else {
+        if webbrowser::open(&*self.url).is_ok() {
             let mut rng = rand::thread_rng();
             if self.is_std() {
                 println!(
@@ -203,6 +201,8 @@ impl CrateInfo {
                     self.warning
                 )
             }
+        } else {
+            println!("Seems like you've lost your way, 学生, try again.");
         }
     }
     /// Opens the crate's documentation locally.
@@ -211,9 +211,7 @@ impl CrateInfo {
             "{}/target/doc/{}/index.html",
             env::current_dir().unwrap().to_str().unwrap(),
             self.name
-        ))
-        .is_ok()
-        {
+        )).is_ok() {
             let mut rng = rand::thread_rng();
             println!(
                 "\x1B[32m\n{} ||| The Book Of {}||| {}\n{}\x1B[32m",

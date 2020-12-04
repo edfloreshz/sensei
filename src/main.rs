@@ -138,7 +138,7 @@ impl CrateInfo {
         } else {
             self.url = if self.is_std() {
                 self.url = "https://doc.rust-lang.org".into();
-                self.format_url("", "index.html", "std")
+                self.format_url("", "std", "index.html")
             } else {
                 self.url = "https://docs.rs".into();
                 self.format_url(&*format!("{}/", &*self.name), "", "")
@@ -146,7 +146,7 @@ impl CrateInfo {
         }
     }
     /// Formats the url.
-    fn format_url(&self, crate_name: &str, index_file: &str, stdlib: &str) -> String {
+    fn format_url(&self, crate_name: &str, stdlib: &str, index_file: &str) -> String {
         if !self.version.is_empty() && !self.query.is_empty() {
             format!(
                 "{}/{}{}/{}/{}?search={}",

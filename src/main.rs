@@ -153,9 +153,15 @@ impl CrateInfo {
                 self.url, crate_name, self.version, self.name, index_file, self.query
             )
         } else if !self.version.is_empty() {
-            format!("{}/{}{}/{}/{}", self.url, crate_name, self.version, stdlib, index_file)
+            format!(
+                "{}/{}{}/{}/{}",
+                self.url, crate_name, self.version, stdlib, index_file
+            )
         } else {
-            format!("{}/{}{}/{}?search={}", self.url, crate_name, stdlib, index_file, self.query)
+            format!(
+                "{}/{}{}/{}?search={}",
+                self.url, crate_name, stdlib, index_file, self.query
+            )
         }
     }
     /// Checks if the crate is The Standard Library.
@@ -170,7 +176,7 @@ impl CrateInfo {
                 env::current_dir().unwrap().to_str().unwrap(),
                 self.name
             )
-                .as_ref(),
+            .as_ref(),
         )
     }
     /// Opens the crate's documentation.
@@ -204,7 +210,7 @@ impl CrateInfo {
             env::current_dir().unwrap().to_str().unwrap(),
             self.name
         ))
-            .is_ok()
+        .is_ok()
         {
             let mut rng = rand::thread_rng();
             println!(

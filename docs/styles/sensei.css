@@ -53,6 +53,13 @@ code {
     border-radius: 10px;
 }
 
+.gif {
+    border: 10px solid #000000;
+    border-radius: 10px;
+    width: 40%;
+    height: 40%;
+}
+
 .push {
     height: 100px;
 }
@@ -101,6 +108,12 @@ code {
         width: 60vw;
     }
 
+    .gif {
+        border: 10px solid #000000;
+        border-radius: 10px;
+        width: 70%;
+        height: 70%;
+    }
     .sushi{
         position: absolute;
         top: 50%; left: 50%;
@@ -116,7 +129,12 @@ code {
         min-width: 400px;
         width: 15vw;
     }
-
+    .gif {
+        border: 10px solid #000000;
+        border-radius: 10px;
+        width: 60%;
+        height: 60%;
+    }
     .sushi{
         position: absolute;
         top: 50%; left: 50%;

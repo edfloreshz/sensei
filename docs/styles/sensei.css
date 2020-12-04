@@ -90,6 +90,8 @@ code {
 
 .space {
     line-height: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 @keyframes disc {
@@ -102,6 +104,10 @@ code {
 }
 
 @media (max-width: 850px){
+    code {
+        font-size: small;
+    }
+
     .vinil{
         animation: disc 3s infinite linear; 
         transform-origin: center;
@@ -132,8 +138,8 @@ code {
     .gif {
         border: 10px solid #000000;
         border-radius: 10px;
-        width: 60%;
-        height: 60%;
+        width: 50%;
+        height: 50%;
     }
     .sushi{
         position: absolute;
@@ -141,5 +147,14 @@ code {
         width: 8.2vw;
         min-width: 216px;
         transform: translate(-50%,-50%);
+    }
+}
+
+@media (min-width: 1501px){
+    .gif {
+        border: 10px solid #000000;
+        border-radius: 10px;
+        width: 40%;
+        height: 40%;
     }
 }

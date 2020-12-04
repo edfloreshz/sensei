@@ -34,7 +34,23 @@ sensei <crate> [OPTIONS] [FLAGS]
 ``` 
 
 
-#### Example
+#### Examples
+###### Opening documentation for a crate.
 ```
-sensei serde -v 0.8.8 -q Serialize 
+sensei rand
+```
+###### Opening local documentation for a crate.
+```
+sensei rand -l
+sensei rand --local
+```
+###### Specifying a version.
+```
+sensei rand -v 0.7.2
+sensei rand --version 0.7.2
+```
+###### Sending a query.
+```
+sensei rand -q Serialize
+sensei rand --query Serialize
 ```

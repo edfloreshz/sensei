@@ -103,6 +103,7 @@ fn first_letter_to_uppercase(c: String) -> String {
     }
 }
 
+/// Stores info about a crate.
 impl CrateInfo {
     /// Creates an object of type CrateInfo.
     fn new(name: String) -> CrateInfo {

@@ -1,9 +1,9 @@
 use clap::{App, Arg, ArgMatches};
-use rand::Rng;
+use fastrand::usize;
+use open;
 use std::env;
 use std::path::Path;
 use std::process::exit;
-use webbrowser;
 
 /// Array with phrases to print at the end of the program.
 const PHRASES: [&str; 4] = ["幸運を", "よく学ぶ", "良い読書", "良書"];
@@ -54,7 +54,7 @@ fn main() {
 /// Creates an object of type ArgMatches with the structure of the CLI.
 fn make_config() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.1.12")
+        .version("0.2.0")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(
@@ -182,23 +182,22 @@ impl CrateInfo {
     }
     /// Opens the crate's documentation.
     fn open(&self) {
-        if webbrowser::open(&*self.url).is_ok() {
-            let mut rng = rand::thread_rng();
+        if open::that(&*self.url).is_ok() {
             if self.is_std() {
                 println!(
                     "\x1B[32m\n{} ||| The Standard Library {}||| {}\n{}\x1B[32m",
-                    PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
+                    PHRASES[usize(0..PHRASES.len() - 1)],
                     format!("{}", self.version),
-                    PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
+                    PHRASES[usize(0..PHRASES.len() - 1)],
                     self.warning
                 )
             } else {
                 println!(
                     "\x1B[32m\n{} ||| The Book Of {} {}||| {}\n{}\x1B[32m",
-                    PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
+                    PHRASES[usize(0..PHRASES.len() - 1)],
                     first_letter_to_uppercase(self.name.clone()),
                     format!("{} ", self.version),
-                    PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
+                    PHRASES[usize(0..PHRASES.len() - 1)],
                     self.warning
                 )
             }
@@ -208,19 +207,18 @@ impl CrateInfo {
     }
     /// Opens the crate's documentation locally.
     fn open_locally(&self) {
-        if webbrowser::open(&*format!(
+        if open::that(&*format!(
             "{}/target/doc/{}/index.html",
             env::current_dir().unwrap().to_str().unwrap(),
             self.name
         ))
         .is_ok()
         {
-            let mut rng = rand::thread_rng();
             println!(
                 "\x1B[32m\n{} ||| The Book Of {}||| {}\n{}\x1B[32m",
-                PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
+                PHRASES[usize(0..PHRASES.len() - 1)],
                 first_letter_to_uppercase(self.name.clone()),
-                PHRASES[rng.gen_range(0, PHRASES.len() - 1)],
+                PHRASES[usize(0..PHRASES.len() - 1)],
                 self.warning
             );
             exit(0)

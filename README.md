@@ -20,36 +20,36 @@ cargo install sensei
 sensei <crate> [OPTIONS] [FLAGS]
 ```
 
-#### Options
+### Options
 
 ```
 -v, --version <version>    Opens documentation for a specific version. 
 -q, --query <query>      Specifies query to search documentation. 
 ```
 
-#### Flags
+### Flags
 ```
 -h, --help      Prints help information
 -l, --local    Tries to open local documentation.
 ``` 
 
 
-#### Examples
-###### Opening documentation for a crate.
+### Examples
+##### Opening documentation for a crate.
 ```
 sensei rand
 ```
-###### Opening local documentation for a crate.
+##### Opening local documentation for a crate.
 ```
 sensei rand -l
 sensei rand --local
 ```
-###### Specifying a version.
+##### Specifying a version.
 ```
 sensei rand -v 0.7.2
 sensei rand --version 0.7.2
 ```
-###### Sending a query.
+##### Sending a query.
 ```
 sensei rand -q Serialize
 sensei rand --query Serialize

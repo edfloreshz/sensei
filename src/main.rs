@@ -27,7 +27,7 @@ struct CrateInfo {
 ///
 /// ```
 /// -q, --query <query>        Specifies query to search documentation.
-///  -v, --version <version>    Opens documentation for a specific version.
+/// -v, --version <version>    Opens documentation for a specific version.
 /// ```
 ///
 /// # Flags
@@ -54,7 +54,7 @@ fn main() {
 /// Creates an object of type ArgMatches with the structure of the CLI.
 fn make_config() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.2.0")
+        .version("0.2.1")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(

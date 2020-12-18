@@ -51,6 +51,6 @@ sensei rand --version 0.7.2
 ```
 ##### Sending a query.
 ```
-sensei rand -q Serialize
-sensei rand --query Serialize
+sensei rand -q Rng
+sensei rand --query Rng
 ```

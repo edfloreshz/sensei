@@ -9,6 +9,7 @@ homepage = "https://edfloreshz.github.io/sensei/"
 documentation = "https://docs.rs/sensei"
 repository = "https://github.com/edfloreshz/sensei/"
 readme = "README.md"
+exclude = ["docs/*"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

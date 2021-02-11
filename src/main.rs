@@ -54,7 +54,7 @@ fn main() {
 /// Creates an object of type ArgMatches with the structure of the CLI.
 fn parse_args() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.2.2")
+        .version("0.2.3")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(

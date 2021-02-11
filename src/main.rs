@@ -46,13 +46,13 @@ struct CrateInfo {
 /// $ sensei serde -v 0.8.8 - q Serializer
 /// ```
 fn main() {
-    let matches = make_config();
+    let matches = parse_args();
     let mut crt = CrateInfo::new(matches.value_of("crate").unwrap().into());
-    check_config(&mut crt, matches);
+    start(&mut crt, matches);
 }
 
 /// Creates an object of type ArgMatches with the structure of the CLI.
-fn make_config() -> ArgMatches<'static> {
+fn parse_args() -> ArgMatches<'static> {
     App::new("Sensei")
         .version("0.2.2")
         .author("Eduardo F. <edfloreshz@gmail.com>")
@@ -89,14 +89,14 @@ fn make_config() -> ArgMatches<'static> {
 }
 
 /// Checks arguments and executes the required actions.
-fn check_config(crt: &mut CrateInfo, matches: ArgMatches) {
+fn start(crt: &mut CrateInfo, matches: ArgMatches) {
     crt.get_args(matches);
     crt.construct_url();
     crt.open();
 }
 
 /// Converts the first letter of a crate's name to upper case.
-fn first_letter_to_uppercase(c: String) -> String {
+fn first_letter_to_upper(c: String) -> String {
     match c.chars().next() {
         None => String::new(),
         Some(f) => f.to_uppercase().collect::<String>() + &c[1..],
@@ -195,7 +195,7 @@ impl CrateInfo {
                 println!(
                     "\x1B[32m\n{} ||| The Book Of {} {}||| {}\n{}\x1B[32m",
                     PHRASES[usize(0..PHRASES.len() - 1)],
-                    first_letter_to_uppercase(self.name.clone()),
+                    first_letter_to_upper(self.name.clone()),
                     format!("{} ", self.version),
                     PHRASES[usize(0..PHRASES.len() - 1)],
                     self.warning
@@ -217,7 +217,7 @@ impl CrateInfo {
             println!(
                 "\x1B[32m\n{} ||| The Book Of {}||| {}\n{}\x1B[32m",
                 PHRASES[usize(0..PHRASES.len() - 1)],
-                first_letter_to_uppercase(self.name.clone()),
+                first_letter_to_upper(self.name.clone()),
                 PHRASES[usize(0..PHRASES.len() - 1)],
                 self.warning
             );

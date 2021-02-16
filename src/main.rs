@@ -3,7 +3,6 @@ use fastrand::usize;
 use open;
 use std::env;
 use std::path::Path;
-use std::process::exit;
 
 /// Array with phrases to print at the end of the program.
 const PHRASES: [&str; 4] = ["幸運を", "よく学ぶ", "良い読書", "良書"];
@@ -15,6 +14,8 @@ struct CrateInfo {
     query: String,
     url: String,
     warning: String,
+    local: bool,
+    std: bool,
 }
 
 /// Receives input from the user to process their request.
@@ -47,14 +48,14 @@ struct CrateInfo {
 /// ```
 fn main() {
     let matches = parse_args();
-    let mut crt = CrateInfo::new(matches.value_of("crate").unwrap().into());
-    start(&mut crt, matches);
+    let crt = CrateInfo::new(parse_args(), matches.value_of("crate").unwrap().into());
+    crt.open();
 }
 
 /// Creates an object of type ArgMatches with the structure of the CLI.
 fn parse_args() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.2.3")
+        .version("0.2.4")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(
@@ -88,13 +89,6 @@ fn parse_args() -> ArgMatches<'static> {
         .get_matches()
 }
 
-/// Checks arguments and executes the required actions.
-fn start(crt: &mut CrateInfo, matches: ArgMatches) {
-    crt.get_args(matches);
-    crt.construct_url();
-    crt.open();
-}
-
 /// Converts the first letter of a crate's name to upper case.
 fn first_letter_to_upper(c: String) -> String {
     match c.chars().next() {
@@ -106,84 +100,66 @@ fn first_letter_to_upper(c: String) -> String {
 /// Stores info about a crate.
 impl CrateInfo {
     /// Creates an object of type CrateInfo.
-    fn new(name: String) -> CrateInfo {
-        CrateInfo {
-            name,
+    fn new(matches: ArgMatches, name: String) -> CrateInfo {
+        let mut crt = CrateInfo {
+            name: name.clone(),
             version: String::new(),
             query: String::new(),
             url: String::new(),
             warning: String::new(),
-        }
-    }
-    /// Assigns arguments to the structure.
-    fn get_args(&mut self, matches: ArgMatches) {
-        if matches.is_present("local") {
-            if matches.is_present("version") || matches.is_present("query") {
-                self.warning = "Versioning and querying is not available with local crates.".into();
-            }
-            if self.is_local() {
-                self.open_locally()
-            }
-        }
-        if matches.is_present("version") {
-            self.version = matches.value_of("version").unwrap().parse().unwrap();
-        }
-        if matches.is_present("query") {
-            self.query = matches.value_of("query").unwrap().parse().unwrap();
-        }
-    }
-    /// Constructs the url.
-    fn construct_url(&mut self) {
-        if self.query.is_empty() && self.version.is_empty() {
-            self.url = format!("https://docs.rs/{}", self.name);
-        } else {
-            self.url = if self.is_std() {
-                self.url = "https://doc.rust-lang.org".into();
-                self.format_url("", "std", "/index.html")
+            local: if matches.is_present("local") {
+                true
             } else {
-                self.url = "https://docs.rs".into();
-                self.format_url(&*format!("{}/", &*self.name), "", "")
-            }
-        }
-    }
-    /// Formats the url.
-    fn format_url(&self, crate_name: &str, stdlib: &str, index_file: &str) -> String {
-        if !self.version.is_empty() && !self.query.is_empty() {
-            format!(
-                "{}/{}{}/{}{}?search={}",
-                self.url, crate_name, self.version, self.name, index_file, self.query
-            )
-        } else if !self.version.is_empty() {
-            format!(
-                "{}/{}{}/{}{}",
-                self.url, crate_name, self.version, stdlib, index_file
-            )
-        } else {
-            format!(
-                "{}/{}{}{}?search={}",
-                self.url, crate_name, stdlib, index_file, self.query
-            )
-        }
-    }
-    /// Checks if the crate is The Standard Library.
-    fn is_std(&self) -> bool {
-        self.name == "std"
-    }
-    /// Checks if the crate is available locally.
-    fn is_local(&self) -> bool {
-        Path::exists(
-            format!(
+                false
+            },
+            std: if name == "std" { true } else { false },
+        };
+        if crt.local {
+            crt.warning = "Versioning and querying is not available with local crates.".into();
+            crt.url = format!(
                 "{}/target/doc/{}/index.html",
                 env::current_dir().unwrap().to_str().unwrap(),
-                self.name
-            )
-            .as_ref(),
-        )
+                name
+            );
+        } else {
+            if crt.std {
+                crt.url = format!("https://doc.rust-lang.org")
+            } else {
+                crt.url = format!("https://docs.rs")
+            }
+            if matches.is_present("version") {
+                crt.version = matches.value_of("version").unwrap().parse().unwrap();
+            }
+            if matches.is_present("query") {
+                crt.query = matches.value_of("query").unwrap().parse().unwrap();
+            }
+            crt.url = match (crt.std, crt.query.is_empty(), crt.version.is_empty()) {
+                (true, true, true) => format!("{}/std/index.html", crt.url),
+                (true, true, false) => format!("{}/{}/std/index.html", crt.url, crt.version),
+                (true, false, true) => format!("{}/std/index.html?search={}", crt.url, crt.query),
+                (true, false, false) => format!(
+                    "{}/{}/std/index.html?search={}",
+                    crt.url, crt.version, crt.query
+                ),
+                (false, true, true) => format!("{}/{}", crt.url, crt.name),
+                (false, true, false) => format!("{}/{}/{}", crt.url, crt.name, crt.version),
+                (false, false, true) => format!("{}/{}/?search={}", crt.url, crt.name, crt.query),
+                (false, false, false) => format!(
+                    "{}/{}/{}/{}/?search={}",
+                    crt.url, crt.name, crt.version, crt.name, crt.query
+                ),
+            }
+        }
+        crt
+    }
+    /// Checks if the crate is available locally.
+    fn is_locally_available(&self) -> bool {
+        Path::new(self.url.as_str()).exists()
     }
     /// Opens the crate's documentation.
     fn open(&self) {
         if open::that(&*self.url).is_ok() {
-            if self.is_std() {
+            if self.std {
                 println!(
                     "\x1B[32m\n{} ||| The Standard Library {}||| {}\n{}\x1B[32m",
                     PHRASES[usize(0..PHRASES.len() - 1)],
@@ -202,26 +178,11 @@ impl CrateInfo {
                 )
             }
         } else {
-            println!("Seems like you've lost your way, 学生, try again.");
-        }
-    }
-    /// Opens the crate's documentation locally.
-    fn open_locally(&self) {
-        if open::that(&*format!(
-            "{}/target/doc/{}/index.html",
-            env::current_dir().unwrap().to_str().unwrap(),
-            self.name
-        ))
-        .is_ok()
-        {
-            println!(
-                "\x1B[32m\n{} ||| The Book Of {}||| {}\n{}\x1B[32m",
-                PHRASES[usize(0..PHRASES.len() - 1)],
-                first_letter_to_upper(self.name.clone()),
-                PHRASES[usize(0..PHRASES.len() - 1)],
-                self.warning
-            );
-            exit(0)
+            if self.local && !self.is_locally_available() {
+                println!("The crate is not available locally");
+            } else {
+                println!("Seems like you've lost your way, 学生, try again.");
+            }
         }
     }
 }

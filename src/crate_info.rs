@@ -120,7 +120,7 @@ fn first_letter_to_upper(c: String) -> String {
 /// Creates an object of type ArgMatches with the structure of the CLI.
 pub fn parse_args() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.2.4")
+        .version("0.2.5")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(

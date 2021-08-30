@@ -31,6 +31,7 @@ sensei <crate> [OPTIONS] [FLAGS]
 ```
 -h, --help      Prints help information
 -l, --local    Tries to open local documentation.
+-m, --manifest  Looks up the version in Cargo.toml
 ``` 
 
 

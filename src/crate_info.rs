@@ -1,11 +1,9 @@
+use crate::Result;
 use clap::{App, Arg, ArgMatches};
-use fastrand::usize;
 use open;
 use std::env;
+use std::fs::read_to_string;
 use std::path::Path;
-
-/// Array with phrases to print at the end of the program.
-const PHRASES: [&str; 4] = ["幸運を", "よく学ぶ", "良い読書", "良書"];
 
 /// Structure with information about the crate.
 pub struct CrateInfo {
@@ -51,6 +49,12 @@ impl CrateInfo {
             if matches.is_present("query") {
                 crt.query = matches.value_of("query").unwrap().parse().unwrap();
             }
+            if matches.is_present("manifest") {
+                match get_manifest_version(crt.name.clone()) {
+                    Ok(version) => crt.version = version,
+                    Err(e) => eprintln!("{}", e),
+                }
+            }
             crt.url = match (crt.std, crt.query.is_empty(), crt.version.is_empty()) {
                 (true, true, true) => format!("{}/std/index.html", crt.url),
                 (true, true, false) => format!("{}/{}/std/index.html", crt.url, crt.version),
@@ -79,48 +83,68 @@ impl CrateInfo {
         Path::new(self.url.as_str()).exists()
     }
     /// Opens the crate's documentation.
-    pub fn open(&self) {
-        if open::that(&*self.url).is_ok() {
-            if self.std {
-                println!(
-                    "\x1B[32m\n{} ||| The Standard Library {}||| {}\n{}\x1B[32m",
-                    PHRASES[usize(0..PHRASES.len() - 1)],
-                    format!("{}", self.version),
-                    PHRASES[usize(0..PHRASES.len() - 1)],
-                    self.warning
-                )
-            } else {
-                println!(
-                    "\x1B[32m\n{} ||| The Book Of {} {}||| {}\n{}\x1B[32m",
-                    PHRASES[usize(0..PHRASES.len() - 1)],
-                    first_letter_to_upper(self.name.clone()),
-                    format!("{} ", self.version),
-                    PHRASES[usize(0..PHRASES.len() - 1)],
-                    self.warning
+    pub fn open(&self) -> Result<()> {
+        println!("{}", self.url);
+        match open::that(&*self.url) {
+            Ok(_) => {
+                Ok(
+                    if self.std {
+                        println!(
+                            "\x1B[32m\n||| The Standard Library {}||| \n{}\x1B[32m",
+                            self.version, self.warning
+                        )
+                    } else {
+                        println!(
+                            "\x1B[32m\n||| The Book Of {} {}|||\n{}\x1B[32m",
+                            first_letter_to_upper(self.name.as_str()),
+                            self.version,
+                            self.warning
+                        )
+                    }
                 )
             }
-        } else {
-            if self.local && !self.is_locally_available() {
-                println!("The crate is not available locally");
-            } else {
-                println!("Seems like you've lost your way, 学生, try again.");
+            Err(e) => {
+                if self.local && !self.is_locally_available() {
+                    println!("The crate is not available locally");
+                } else {
+                    println!("Seems like you've lost your way, 学生, try again.");
+                }
+                Err(Box::new(e))
             }
         }
     }
 }
 
+/// Get manifest version from Cargo.toml
+fn get_manifest_version(name: String) -> std::io::Result<String> {
+    let toml = format!("{}/{}", std::env::current_dir()?.display(), "Cargo.toml");
+    let version: String = read_to_string(toml)?
+        .lines()
+        .filter(|l| l.replace(" ", "").contains(format!("{}=", name).as_str()))
+        .collect();
+    Ok(version.trim_matches(|c: char| !c.is_numeric()).to_string())
+}
+
 /// Converts the first letter of a crate's name to upper case.
-fn first_letter_to_upper(c: String) -> String {
-    match c.chars().next() {
-        None => String::new(),
-        Some(f) => f.to_uppercase().collect::<String>() + &c[1..],
+fn first_letter_to_upper(c: &str) -> String {
+    if c.len() > 0 {
+        format!("{}{}", &c[0..1].to_uppercase(), &c[1..])
+    } else {
+        c.to_string()
     }
+}
+
+#[test]
+fn test_first_letter_to_upper() {
+    assert_eq!(first_letter_to_upper("crate"), "Crate");
+    assert_eq!(first_letter_to_upper("c"), "C");
+    assert_eq!(first_letter_to_upper(""), "");
 }
 
 /// Creates an object of type ArgMatches with the structure of the CLI.
 pub fn parse_args() -> ArgMatches<'static> {
     App::new("Sensei")
-        .version("0.2.5")
+        .version("0.2.6")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(
@@ -150,6 +174,12 @@ pub fn parse_args() -> ArgMatches<'static> {
                 .short("q")
                 .long("query")
                 .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("manifest")
+                .help("Looks up the version in Cargo.toml")
+                .short("m")
+                .long("manifest"),
         )
         .get_matches()
 }

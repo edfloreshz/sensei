@@ -49,8 +49,14 @@ sensei rand --local
 sensei rand -v 0.7.2
 sensei rand --version 0.7.2
 ```
+#### Getting version from Cargo.toml
+```rust 
+sensei rand --manifest
+sensei rand -m
+```
 ##### Sending a query.
 ```
 sensei rand -q Rng
 sensei rand --query Rng
 ```
+

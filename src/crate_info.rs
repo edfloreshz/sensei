@@ -84,7 +84,6 @@ impl CrateInfo {
     }
     /// Opens the crate's documentation.
     pub fn open(&self) -> Result<()> {
-        println!("{}", self.url);
         match open::that(&*self.url) {
             Ok(_) => {
                 Ok(

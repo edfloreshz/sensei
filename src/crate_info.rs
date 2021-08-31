@@ -76,12 +76,10 @@ fn is_locally_available(path: &str) -> bool {
 fn make_url(crate_info: &CrateInfo) -> String {
     match &crate_info.source {
         CrateSource::Std => {
-            let mut base = String::from("https://doc.rust-lang.org/");
-
-            base = if let Some(version) = &crate_info.version {
-                base + &format!("{}/std/", version)
+            let base = if let Some(version) = &crate_info.version {
+                format!("https://doc.rust-lang.org/{}/std/", version)
             } else {
-                base + &format!("stable/std/")
+                format!("https://doc.rust-lang.org/stable/std/")
             };
 
             if let Some(query) = crate_info.query {

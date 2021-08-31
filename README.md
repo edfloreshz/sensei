@@ -10,25 +10,25 @@
 Sensei is a simple command line tool to open documentation for any crate in crates.io. 
 
 ## Installation
-```
+```rust 
 cargo install sensei
 ```
 
 ## Usage 
 
-```
+```rust 
 sensei <crate> [OPTIONS] [FLAGS]
 ```
 
 ### Options
 
-```
+```rust 
 -v, --version <version>    Opens documentation for a specific version. 
 -q, --query <query>      Specifies query to search documentation. 
 ```
 
 ### Flags
-```
+```rust 
 -h, --help      Prints help information
 -l, --local    Tries to open local documentation.
 -m, --manifest  Looks up the version in Cargo.toml
@@ -37,16 +37,16 @@ sensei <crate> [OPTIONS] [FLAGS]
 
 ### Examples
 ##### Opening documentation for a crate.
-```
+```rust 
 sensei rand
 ```
 ##### Opening local documentation for a crate.
-```
+```rust 
 sensei rand -l
 sensei rand --local
 ```
 ##### Specifying a version.
-```
+```rust 
 sensei rand -v 0.7.2
 sensei rand --version 0.7.2
 ```
@@ -56,7 +56,7 @@ sensei rand --manifest
 sensei rand -m
 ```
 ##### Sending a query.
-```
+```rust 
 sensei rand -q Rng
 sensei rand --query Rng
 ```

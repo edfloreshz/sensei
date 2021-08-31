@@ -1,121 +1,156 @@
 use crate::Result;
-use clap::{App, Arg, ArgMatches};
-use open;
+use clap::ArgMatches;
+use std::borrow::Cow;
 use std::env;
 use std::fs::read_to_string;
 use std::path::Path;
 
-/// Structure with information about the crate.
-pub struct CrateInfo {
-    name: String,
-    version: String,
-    query: String,
-    url: String,
-    warning: String,
-    local: bool,
-    std: bool,
+enum CrateSource {
+    Std,
+    Local(String),
+    DocsRs(String),
 }
 
-/// Stores info about a crate.
-impl CrateInfo {
-    /// Creates an object of type CrateInfo.
-    pub fn new(matches: ArgMatches) -> CrateInfo {
-        let name = matches.value_of("crate").unwrap().to_lowercase().clone();
-        let mut crt = CrateInfo {
-            name: name.clone(),
-            version: String::new(),
-            query: String::new(),
-            url: String::new(),
-            warning: String::new(),
-            local: matches.is_present("local"),
-            std: "std".eq_ignore_ascii_case(&name),
-        };
-        if crt.local {
-            crt.warning = "Versioning and querying is not available with local crates.".into();
-            crt.url = format!(
+impl CrateSource {
+    fn is_local(&self) -> bool {
+        match self {
+            &CrateSource::Local(_) => true,
+            _ => false,
+        }
+    }
+}
+
+/// Structure with information about the crate.
+pub struct CrateInfo<'a> {
+    source: CrateSource,
+    version: Option<Cow<'a, str>>,
+    query: Option<&'a str>,
+    warning: Option<String>,
+}
+
+pub fn parse_args<'a>(matches: &'a ArgMatches) -> CrateInfo<'a> {
+    let name = matches.value_of("crate").unwrap().to_lowercase();
+    let query = matches.value_of("query");
+
+    let version = if matches.is_present("manifest") {
+        match get_manifest_version(&name) {
+            Ok(version) => Some(Cow::Owned(version)),
+            Err(e) => {
+                eprintln!("{}", e);
+
+                None
+            }
+        }
+    } else {
+        matches.value_of("version").map(|v| Cow::Borrowed(v))
+    };
+
+    let (source, warning) = if name == "std" {
+        (CrateSource::Std, None)
+    } else if matches.is_present("local") {
+        (
+            CrateSource::Local(name),
+            if version.is_some() || query.is_some() {
+                Some("Versioning and querying is not available with local crates.".to_owned())
+            } else {
+                None
+            },
+        )
+    } else {
+        (CrateSource::DocsRs(name), None)
+    };
+
+    CrateInfo {
+        source,
+        version,
+        query,
+        warning,
+    }
+}
+
+/// Checks if the crate is available locally.
+fn is_locally_available(path: &str) -> bool {
+    Path::new(path).exists()
+}
+
+fn make_url(crate_info: &CrateInfo) -> String {
+    match &crate_info.source {
+        CrateSource::Std => {
+            let base = if let Some(version) = &crate_info.version {
+                format!("https://doc.rust-lang.org/{}/std/", version)
+            } else {
+                format!("https://doc.rust-lang.org/stable/std/")
+            };
+
+            if let Some(query) = crate_info.query {
+                base + &format!("?search={}", query)
+            } else {
+                base
+            }
+        }
+        CrateSource::Local(name) => {
+            format!(
                 "{}/target/doc/{}/index.html",
                 env::current_dir().unwrap().to_str().unwrap(),
                 name
-            );
-        } else {
-            if crt.std {
-                crt.url = format!("https://doc.rust-lang.org")
+            )
+        }
+        CrateSource::DocsRs(name) => {
+            let base = if let Some(version) = crate_info.version.as_ref() {
+                format!("https://docs.rs/{}/{}", name, version)
             } else {
-                crt.url = format!("https://docs.rs")
-            }
-            if matches.is_present("version") {
-                crt.version = matches.value_of("version").unwrap().parse().unwrap();
-            }
-            if matches.is_present("query") {
-                crt.query = matches.value_of("query").unwrap().parse().unwrap();
-            }
-            if matches.is_present("manifest") {
-                match get_manifest_version(crt.name.clone()) {
-                    Ok(version) => crt.version = version,
-                    Err(e) => eprintln!("{}", e),
-                }
-            }
-            crt.url = match (crt.std, crt.query.is_empty(), crt.version.is_empty()) {
-                (true, true, true) => format!("{}/std/index.html", crt.url),
-                (true, true, false) => format!("{}/{}/std/index.html", crt.url, crt.version),
-                (true, false, true) => {
-                    format!("{}/std/index.html?search={}", crt.url, crt.query)
-                }
-                (true, false, false) => format!(
-                    "{}/{}/std/index.html?search={}",
-                    crt.url, crt.version, crt.query
-                ),
-                (false, true, true) => format!("{}/{}", crt.url, crt.name),
-                (false, true, false) => format!("{}/{}/{}", crt.url, crt.name, crt.version),
-                (false, false, true) => {
-                    format!("{}/{}/?search={}", crt.url, crt.name, crt.query)
-                }
-                (false, false, false) => format!(
-                    "{}/{}/{}/{}/?search={}",
-                    crt.url, crt.name, crt.version, crt.name, crt.query
-                ),
+                format!("https://docs.rs/{}", name)
+            };
+
+            if let Some(query) = crate_info.query {
+                base + &format!("?search={}", query)
+            } else {
+                base
             }
         }
-        crt
     }
-    /// Checks if the crate is available locally.
-    fn is_locally_available(&self) -> bool {
-        Path::new(self.url.as_str()).exists()
-    }
-    /// Opens the crate's documentation.
-    pub fn open(&self) -> Result<()> {
-        match open::that(&*self.url) {
-            Ok(_) => {
-                Ok(
-                    if self.std {
-                        println!(
-                            "\x1B[32m\n||| The Standard Library {}||| \n{}\x1B[32m",
-                            self.version, self.warning
-                        )
+}
+
+/// Opens the crate's documentation.
+pub fn open(crate_info: CrateInfo) -> Result<()> {
+    let url = make_url(&crate_info);
+
+    match open::that(&url) {
+        Ok(_) => {
+            match crate_info.source {
+                CrateSource::Std => {
+                    if let Some(version) = &crate_info.version {
+                        println!("\x1B[32m\n||| The Standard Library {} ||| \n\x1B[32m", version)
                     } else {
-                        println!(
-                            "\x1B[32m\n||| The Book Of {} {}|||\n{}\x1B[32m",
-                            first_letter_to_upper(self.name.as_str()),
-                            self.version,
-                            self.warning
-                        )
+                        println!("\x1B[32m\n||| The Standard Library ||| \n\x1B[32m")
                     }
-                )
-            }
-            Err(e) => {
-                if self.local && !self.is_locally_available() {
-                    println!("The crate is not available locally");
-                } else {
-                    println!("Seems like you've lost your way, 学生, try again.");
                 }
-                Err(Box::new(e))
+                CrateSource::Local(name) | CrateSource::DocsRs(name) => {
+                    println!(
+                        "\x1B[32m\n||| The Book Of {} {}|||\n{}\x1B[32m",
+                        first_letter_to_upper(&name),
+                        crate_info.version.unwrap_or_else(|| "".into()),
+                        crate_info.warning.unwrap_or_else(|| "".into()),
+                    );
+                }
             }
+
+            Ok(())
+        }
+        Err(e) => {
+            if crate_info.source.is_local() && !is_locally_available(&url) {
+                println!("The crate is not available locally");
+            } else {
+                println!("Seems like you've lost your way, 学生, try again.");
+            }
+
+            Err(Box::new(e))
         }
     }
 }
 
 /// Get manifest version from Cargo.toml
-fn get_manifest_version(name: String) -> std::io::Result<String> {
+fn get_manifest_version(name: &str) -> std::io::Result<String> {
     let toml = format!("{}/{}", std::env::current_dir()?.display(), "Cargo.toml");
     let version: String = read_to_string(toml)?
         .lines()
@@ -133,52 +168,14 @@ fn first_letter_to_upper(c: &str) -> String {
     }
 }
 
-#[test]
-fn test_first_letter_to_upper() {
-    assert_eq!(first_letter_to_upper("crate"), "Crate");
-    assert_eq!(first_letter_to_upper("c"), "C");
-    assert_eq!(first_letter_to_upper(""), "");
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-/// Creates an object of type ArgMatches with the structure of the CLI.
-pub fn parse_args() -> ArgMatches<'static> {
-    App::new("Sensei")
-        .version("0.2.7")
-        .author("Eduardo F. <edfloreshz@gmail.com>")
-        .about("Opens the documentation for any crate.")
-        .arg(
-            Arg::with_name("crate")
-                .help("What crate do you need help with, 学生?")
-                .short("c")
-                .long("crate")
-                .required(true)
-                .index(1),
-        )
-        .arg(
-            Arg::with_name("local")
-                .help("Tries to open local documentation.")
-                .short("l")
-                .long("local"),
-        )
-        .arg(
-            Arg::with_name("version")
-                .help("Opens documentation for a specific version.")
-                .short("v")
-                .long("version")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("query")
-                .help("Specifies query to search documentation.")
-                .short("q")
-                .long("query")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("manifest")
-                .help("Looks up the version in Cargo.toml")
-                .short("m")
-                .long("manifest"),
-        )
-        .get_matches()
+    #[test]
+    fn test_first_letter_to_upper() {
+        assert_eq!(first_letter_to_upper("crate"), "Crate");
+        assert_eq!(first_letter_to_upper("c"), "C");
+        assert_eq!(first_letter_to_upper(""), "");
+    }
 }

@@ -1,9 +1,9 @@
 use crate::Result;
 use clap::ArgMatches;
-use std::fs::read_to_string;
-use std::path::Path;
 use std::borrow::Cow;
 use std::env;
+use std::fs::read_to_string;
+use std::path::Path;
 
 enum CrateSource {
     Std,
@@ -39,25 +39,32 @@ pub fn parse_args<'a>(matches: &'a ArgMatches) -> CrateInfo<'a> {
                 eprintln!("{}", e);
 
                 None
-            },
+            }
         }
     } else {
         matches.value_of("version").map(|v| Cow::Borrowed(v))
     };
 
-
     let (source, warning) = if name == "std" {
         (CrateSource::Std, None)
     } else if matches.is_present("local") {
-        (CrateSource::Local(name), if version.is_some() || query.is_some() {
-            Some("Versioning and querying is not available with local crates.".to_owned())
-        } else { None })
+        (
+            CrateSource::Local(name),
+            if version.is_some() || query.is_some() {
+                Some("Versioning and querying is not available with local crates.".to_owned())
+            } else {
+                None
+            },
+        )
     } else {
         (CrateSource::DocsRs(name), None)
     };
 
     CrateInfo {
-        source, version, query, warning,
+        source,
+        version,
+        query,
+        warning,
     }
 }
 
@@ -66,28 +73,38 @@ fn is_locally_available(path: &str) -> bool {
     Path::new(path).exists()
 }
 
-fn make_url(crinfo: &CrateInfo) -> String {
-    match &crinfo.source {
+fn make_url(crate_info: &CrateInfo) -> String {
+    match &crate_info.source {
         CrateSource::Std => {
-            let base = String::from("https://docs.rs/std/index.html");
+            let mut base = String::from("https://doc.rust-lang.org/");
 
-            if let Some(query) = crinfo.query {
+            base = if let Some(version) = &crate_info.version {
+                base + &format!("{}/std/", version)
+            } else {
+                base + &format!("stable/std/")
+            };
+
+            if let Some(query) = crate_info.query {
                 base + &format!("?search={}", query)
             } else {
                 base
             }
-        },
+        }
         CrateSource::Local(name) => {
-            format!("{}/target/doc/{}/index.html", env::current_dir().unwrap().to_str().unwrap(), name)
-        },
+            format!(
+                "{}/target/doc/{}/index.html",
+                env::current_dir().unwrap().to_str().unwrap(),
+                name
+            )
+        }
         CrateSource::DocsRs(name) => {
-            let base = if let Some(version) = crinfo.version.as_ref() {
+            let base = if let Some(version) = crate_info.version.as_ref() {
                 format!("https://docs.rs/{}/{}", name, version)
             } else {
                 format!("https://docs.rs/{}", name)
             };
 
-            if let Some(query) = crinfo.query {
+            if let Some(query) = crate_info.query {
                 base + &format!("?search={}", query)
             } else {
                 base
@@ -97,29 +114,33 @@ fn make_url(crinfo: &CrateInfo) -> String {
 }
 
 /// Opens the crate's documentation.
-pub fn open(crinfo: CrateInfo) -> Result<()> {
-    let url = make_url(&crinfo);
+pub fn open(crate_info: CrateInfo) -> Result<()> {
+    let url = make_url(&crate_info);
 
     match open::that(&url) {
         Ok(_) => {
-            match crinfo.source {
+            match crate_info.source {
                 CrateSource::Std => {
-                    println!("\x1B[32m\n||| The Standard Library ||| \n\x1B[32m");
-                },
+                    if let Some(version) = &crate_info.version {
+                        println!("\x1B[32m\n||| The Standard Library {} ||| \n\x1B[32m", version)
+                    } else {
+                        println!("\x1B[32m\n||| The Standard Library ||| \n\x1B[32m")
+                    }
+                }
                 CrateSource::Local(name) | CrateSource::DocsRs(name) => {
                     println!(
                         "\x1B[32m\n||| The Book Of {} {}|||\n{}\x1B[32m",
                         first_letter_to_upper(&name),
-                        crinfo.version.unwrap_or_else(|| "".into()),
-                        crinfo.warning.unwrap_or_else(|| "".into()),
+                        crate_info.version.unwrap_or_else(|| "".into()),
+                        crate_info.warning.unwrap_or_else(|| "".into()),
                     );
-                },
+                }
             }
 
             Ok(())
         }
         Err(e) => {
-            if crinfo.source.is_local() && !is_locally_available(&url) {
+            if crate_info.source.is_local() && !is_locally_available(&url) {
                 println!("The crate is not available locally");
             } else {
                 println!("Seems like you've lost your way, 学生, try again.");

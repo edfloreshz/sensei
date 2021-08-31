@@ -1,7 +1,7 @@
 mod crate_info;
-use crate_info::{parse_args, open};
-use std::error::Error;
 use clap::{App, Arg};
+use crate_info::{open, parse_args};
+use std::error::Error;
 
 pub type Result<T> = std::result::Result<T, Box<dyn Error>>;
 
@@ -76,7 +76,7 @@ fn main() -> Result<()> {
         )
         .get_matches();
 
-    let crinfo = parse_args(&matches);
+    let crate_info = parse_args(&matches);
 
-    open(crinfo)
+    open(crate_info)
 }

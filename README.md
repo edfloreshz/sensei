@@ -22,13 +22,13 @@ sensei <crate> [OPTIONS] [FLAGS]
 
 ### Options
 
-```rust 
+``` 
 -v, --version <version>    Opens documentation for a specific version. 
 -q, --query <query>      Specifies query to search documentation. 
 ```
 
 ### Flags
-```rust 
+``` 
 -h, --help      Prints help information
 -l, --local    Tries to open local documentation.
 -m, --manifest  Looks up the version in Cargo.toml
@@ -37,11 +37,11 @@ sensei <crate> [OPTIONS] [FLAGS]
 
 ### Examples
 ##### Opening documentation for a crate.
-```rust 
+```rust
 sensei rand
 ```
 ##### Opening local documentation for a crate.
-```rust 
+```rust
 sensei rand -l
 sensei rand --local
 ```

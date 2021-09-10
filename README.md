@@ -66,7 +66,7 @@ sensei rand -v 0.7.2
 sensei rand --version 0.7.2
 ```
 
-#### Getting version from Cargo.toml
+##### Getting version from Cargo.toml
 
 ```rust
 sensei rand --manifest

@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: rust-rustfmt-check
+    - uses: mbrobbel/rustfmt-check@0.3.0
+
     - uses: actions/checkout@v2
     - name: Build
       run: cargo build --verbose

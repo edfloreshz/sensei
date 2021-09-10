@@ -120,7 +120,10 @@ pub fn open(crate_info: CrateInfo) -> Result<()> {
             match crate_info.source {
                 CrateSource::Std => {
                     if let Some(version) = &crate_info.version {
-                        println!("\x1B[32m\n||| The Standard Library {} ||| \n\x1B[32m", version)
+                        println!(
+                            "\x1B[32m\n||| The Standard Library {} ||| \n\x1B[32m",
+                            version
+                        )
                     } else {
                         println!("\x1B[32m\n||| The Standard Library ||| \n\x1B[32m")
                     }

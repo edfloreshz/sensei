@@ -26,7 +26,7 @@ yay -S sensei-git
 ## Usage
 
 ```rust
-sensei <crate> [OPTIONS] [FLAGS]
+ss <crate> [OPTIONS] [FLAGS]
 ```
 
 ### Options
@@ -49,33 +49,33 @@ sensei <crate> [OPTIONS] [FLAGS]
 ##### Opening documentation for a crate.
 
 ```rust
-sensei rand
+ss rand
 ```
 
 ##### Opening local documentation for a crate.
 
 ```rust
-sensei rand -l
-sensei rand --local
+ss rand -l
+ss rand --local
 ```
 
 ##### Specifying a version.
 
 ```rust
-sensei rand -v 0.7.2
-sensei rand --version 0.7.2
+ss rand -v 0.7.2
+ss rand --version 0.7.2
 ```
 
 ##### Getting version from Cargo.toml
 
 ```rust
-sensei rand --manifest
-sensei rand -m
+ss rand --manifest
+ss rand -m
 ```
 
 ##### Sending a query.
 
 ```rust
-sensei rand -q Rng
-sensei rand --query Rng
+ss rand -q Rng
+ss rand --query Rng
 ```

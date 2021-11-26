@@ -1,5 +1,5 @@
 [package]
-name = "ss"
+name = "sensei"
 version = "0.2.7"
 authors = ["Eduardo Flores <edfloreshz@gmail.com>"]
 edition = "2018"
@@ -11,6 +11,9 @@ repository = "https://github.com/edfloreshz/sensei/"
 readme = "README.md"
 exclude = ["docs/*"]
 
+[[bin]]
+name = "sns"
+path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

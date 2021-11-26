@@ -35,7 +35,7 @@ yay -S sensei-git
 ## Usage
 
 ```rust
-ss <crate> [OPTIONS] [FLAGS]
+sns <crate> [OPTIONS] [FLAGS]
 ```
 
 ### Options
@@ -58,33 +58,33 @@ ss <crate> [OPTIONS] [FLAGS]
 ##### Opening documentation for a crate.
 
 ```rust
-ss rand
+sns rand
 ```
 
 ##### Opening local documentation for a crate.
 
 ```rust
-ss rand -l
-ss rand --local
+sns rand -l
+sns rand --local
 ```
 
 ##### Specifying a version.
 
 ```rust
-ss rand -v 0.7.2
-ss rand --version 0.7.2
+sns rand -v 0.7.2
+sns rand --version 0.7.2
 ```
 
 ##### Getting version from Cargo.toml
 
 ```rust
-ss rand --manifest
-ss rand -m
+sns rand --manifest
+sns rand -m
 ```
 
 ##### Sending a query.
 
 ```rust
-ss rand -q Rng
-ss rand --query Rng
+sns rand -q Rng
+sns rand --query Rng
 ```

@@ -22,6 +22,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            release/latest.tar.gz
+            release/sensei-amd64.tar.gz
             LICENSE
             README.md

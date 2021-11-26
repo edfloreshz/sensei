@@ -1,7 +1,7 @@
 # Maintainer: Eduardo Flores <edfloreshz@gmail.com>
 
 pkgname=sensei
-pkgver=0.2.8.139.29866d3
+pkgver=0.2.8
 pkgrel=1
 epoch=
 pkgdesc="Sensei is a simple command line tool to open documentation for any crate."
@@ -20,21 +20,16 @@ backup=()
 options=()
 install=
 changelog=
-source=("https://github.com/edfloreshz/sensei/releases/download/v$pkgver/latest.tar.gz")
+source=("https://github.com/edfloreshz/sensei/releases/download/v$pkgver/sensei-amd64.tar.gz")
 noextract=()
 md5sums=('SKIP')
 validpgpkeys=()
 
-pkgver() {
-	cd "$_pkgname"
-	echo "$pkgver.$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
-}
-
 build() {
 	mkdir -p pkg/sensei
-	mv latest.tar.gz pkg/sensei
+	mv sensei-amd64.tar.gz pkg/sensei
 	cd pkg/sensei
-	tar -xzvf latest.tar.gz
+	tar -xzvf sensei-amd64.tar.gz
 	cd release
 }
 

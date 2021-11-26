@@ -1,4 +1,6 @@
-pkgname="latest.tar.gz"
+pkgver="0.2.8"
+pkgname="sensei-amd64.tar.gz"
+echo Building v$pkgver\n
 
 cd ..
 mkdir release

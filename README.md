@@ -14,6 +14,9 @@
   <a href="https://t.me/sensei_rs">
     <img src="https://img.shields.io/static/v1?label=chat&message=Telegram&color=blue&logo=telegram" alt="chat on telegram"/>
   </a>
+  <a href="https://aur.archlinux.org/packages/sensei/">
+    <img src="https://img.shields.io/aur/version/sensei" alt="sensei"/>
+  </a>
 </div>
 
 Sensei is a simple command line tool to open documentation for any crate in crates.io

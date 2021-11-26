@@ -29,7 +29,7 @@ cargo install sensei
 #### Arch Linux
 
 ```rust
-yay -S sensei-git
+paru -S sensei
 ```
 
 ## Usage

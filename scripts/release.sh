@@ -1,6 +1,4 @@
-pkgver="0.2.8.$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
-pkgname="sensei-$pkgver-amd64.tar.gz"
-echo Building v$pkgver\n
+pkgname="latest.tar.gz"
 
 cd ..
 mkdir release

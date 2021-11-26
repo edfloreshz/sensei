@@ -20,7 +20,7 @@ backup=()
 options=()
 install=
 changelog=
-source=("https://github.com/edfloreshz/sensei/releases/download/v$pkgver/sensei-$pkgver-amd64.tar.gz")
+source=("https://github.com/edfloreshz/sensei/releases/download/v$pkgver/latest.tar.gz")
 noextract=()
 md5sums=('SKIP')
 validpgpkeys=()
@@ -32,9 +32,9 @@ pkgver() {
 
 build() {
 	mkdir -p pkg/sensei
-	mv sensei-${pkgver}-amd64.tar.gz pkg/sensei
+	mv latest.tar.gz pkg/sensei
 	cd pkg/sensei
-	tar -xzvf sensei-${pkgver}-amd64.tar.gz
+	tar -xzvf latest.tar.gz
 	cd release
 }
 

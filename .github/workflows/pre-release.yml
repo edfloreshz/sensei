@@ -13,6 +13,7 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
+      - uses: actions/checkout@v2
       - name: Release
         run: chmod 755 ./scripts/release.sh && ./scripts/release.sh
       - uses: "marvinpinto/action-automatic-releases@latest"

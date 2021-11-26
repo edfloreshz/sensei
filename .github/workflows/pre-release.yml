@@ -16,7 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build
-        run: cd sensei && chmod 755 scripts/release.sh && ./scripts/release.sh
+        run: echo $(pwd) && echo $(ls) && chmod 755 scripts/release.sh && ./scripts/release.sh
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

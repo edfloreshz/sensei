@@ -1,7 +1,7 @@
 # Maintainer: Eduardo Flores <edfloreshz@gmail.com>
 
 pkgname=sensei
-pkgver=0.2.8
+pkgver=0.2.8.139.29866d3
 pkgrel=1
 epoch=
 pkgdesc="Sensei is a simple command line tool to open documentation for any crate."
@@ -10,7 +10,7 @@ url="https://sensei.edfloreshz.dev"
 license=('GPL')
 groups=()
 depends=()
-makedepends=('cargo')
+makedepends=()
 checkdepends=()
 optdepends=()
 provides=(sns)
@@ -25,12 +25,21 @@ noextract=()
 md5sums=('SKIP')
 validpgpkeys=()
 
+pkgver() {
+	cd "$_pkgname"
+	echo "$pkgver.$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+}
+
 build() {
-	tar xvzf sensei-$pkgver-amd64.tar.gz 
+	mkdir -p pkg/sensei
+	mv sensei-${pkgver}-amd64.tar.gz pkg/sensei
+	cd pkg/sensei
+	tar -xzvf sensei-${pkgver}-amd64.tar.gz
+	cd release
 }
 
 package() {
-	sudo mv sns ${pkgdir}
+	sudo mv pkg/sensei/sns ${pkgdir}
 	install -Dm644 LICENSE ${pkgdir}/usr/share/licenses/${pkgname}/LICENSE
 	install -Dm644 README.md ${pkgdir}/usr/share/doc/${pkgname}/README.md
 }

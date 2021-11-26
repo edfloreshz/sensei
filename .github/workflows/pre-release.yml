@@ -21,4 +21,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: release/sensei-0.2.8-amd64.tar.gz
+          files: |
+          release/sensei-0.2.8-amd64.tar.gz
+          LICENSE
+          README.md

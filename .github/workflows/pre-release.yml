@@ -3,8 +3,9 @@ name: "pre-release"
 
 on:
   push:
-    branches:
-      - "main"
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   pre-release:
@@ -12,11 +13,8 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      # ...
-      - name: "Build & test"
-        run: |
-          echo "done!" && chmod 755 ./scripts/publish.sh && ./scripts/publish.sh
-
+      - name: Publish
+        run: chmod 755 ./scripts/publish.sh && ./scripts/publish.sh
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"

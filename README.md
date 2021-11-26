@@ -1,11 +1,21 @@
 <div align="center">
   <br>
   <img src="https://raw.githubusercontent.com/edfloreshz/sensei/main/docs/assets/logo.png" width="150" />
-
   <h1>Sensei (先生)</h1>
+  <a href="">
+    <img src="https://img.shields.io/github/workflow/status/edfloreshz/sensei/Rust?logo=GitHub&style=for-the-badge" alt="build"/>
+  </a>
+  <a href="https://crates.io/crates/sensei">
+    <img src="https://img.shields.io/crates/v/sensei?label=Sensei&style=for-the-badge" alt="crate"/>
+  </a>
+  <img src="https://img.shields.io/crates/d/sensei?style=for-the-badge" alt="downloads"/>
+  <a href="https://t.me/sensei_rs">
+    <img src="https://img.shields.io/static/v1?label=chat&message=Telegram&color=blue&logo=telegram&style=for-the-badge" alt="chat on telegram"/>
+  </a>
 </div>
 
-![Rust](https://github.com/edfloreshz/sensei/workflows/Rust/badge.svg?branch=main)
+
+  
 
 Sensei is a simple command line tool to open documentation for any crate in crates.io.
 

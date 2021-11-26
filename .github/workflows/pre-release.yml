@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Release
-        run: chmod 755 ./scripts/release.sh && ./scripts/release.sh
+        run: pwd && ls && chmod 755 scripts/release.sh && ./scripts/release.sh
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"

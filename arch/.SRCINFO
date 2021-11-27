@@ -8,7 +8,8 @@ pkgbase = sensei
 	provides = sns
 	conflicts = sensei
 	conflicts = sns
+	conflicts = sensei-git
 	source = https://github.com/edfloreshz/sensei/releases/download/v0.2.8/sensei-amd64.tar.gz
-	md5sums = SKIP
+	sha256sums = 445753db9caf4ec423a27a3a9299e0b642c1816a4801b76bf73d15955ead6b18
 
 pkgname = sensei

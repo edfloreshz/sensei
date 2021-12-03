@@ -1,6 +1,6 @@
 <div align="center">
   <br>
-  <img src="https://github.com/edfloreshz/sensei/blob/main/assets/docs/assets/logo.png?raw=true" width="150" />
+  <img src="https://github.com/edfloreshz/sensei/blob/main/docs/assets/logo.png?raw=true" width="150" />
   <h1>Sensei (先生)</h1>
   <a href="https://github.com/edfloreshz/sensei/actions/workflows/rust.yml">
     <img src="https://img.shields.io/github/workflow/status/edfloreshz/sensei/Rust?logo=GitHub" alt="build"/>

@@ -1,7 +1,7 @@
 # Maintainer: Eduardo Flores <edfloreshz@gmail.com>
 
 pkgname=sensei
-pkgver=0.2.8
+pkgver=0.2.9
 pkgrel=1
 pkgdesc="Sensei is a simple command line tool to open documentation for any crate."
 arch=(x86_64)

@@ -37,7 +37,7 @@ pub type Result<T> = std::result::Result<T, Box<dyn Error>>;
 /// ```
 fn main() -> Result<()> {
     let matches = App::new("Sensei")
-        .version("0.2.7")
+        .version("0.2.9")
         .author("Eduardo F. <edfloreshz@gmail.com>")
         .about("Opens the documentation for any crate.")
         .arg(

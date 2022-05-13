@@ -1,6 +1,6 @@
 pkgbase = sensei
 	pkgdesc = Sensei is a simple command line tool to open documentation for any crate.
-	pkgver = 0.2.8
+	pkgver = 0.2.9
 	pkgrel = 1
 	url = https://sensei.edfloreshz.dev
 	arch = x86_64
@@ -9,7 +9,7 @@ pkgbase = sensei
 	conflicts = sensei
 	conflicts = sns
 	conflicts = sensei-git
-	source = https://github.com/edfloreshz/sensei/releases/download/v0.2.8/sensei-amd64.tar.gz
+	source = https://github.com/edfloreshz/sensei/releases/download/v0.2.9/sensei-amd64.tar.gz
 	sha256sums = 445753db9caf4ec423a27a3a9299e0b642c1816a4801b76bf73d15955ead6b18
 
 pkgname = sensei

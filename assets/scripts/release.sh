@@ -1,4 +1,4 @@
-pkgver="0.2.8"
+pkgver="0.2.9"
 pkgname="sensei-amd64.tar.gz"
 echo Building v$pkgver\n
 

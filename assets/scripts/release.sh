@@ -1,8 +1,7 @@
 pkgver="0.2.9"
 pkgname="sensei-amd64.tar.gz"
-echo Building v$pkgver\n
+echo Building v$pkgver
 
-cd ..
 mkdir release
 cargo build --release
 mv target/release/sns release 

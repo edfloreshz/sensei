@@ -121,16 +121,16 @@ pub fn open(crate_info: CrateInfo) -> Result<()> {
                 CrateSource::Std => {
                     if let Some(version) = &crate_info.version {
                         println!(
-                            "\x1B[32m\n||| The Standard Library {} ||| \n\x1B[32m",
+                            "\n\x1B[32m||| The Standard Library {} ||| \x1b[0m\n",
                             version
                         )
                     } else {
-                        println!("\x1B[32m\n||| The Standard Library ||| \n\x1B[32m")
+                        println!("\n\x1B[32m||| The Standard Library ||| \x1b[0m\n")
                     }
                 }
                 CrateSource::Local(name) | CrateSource::DocsRs(name) => {
                     println!(
-                        "\x1B[32m\n||| The Book Of {} {}|||\n{}\x1B[32m",
+                        "\n\x1B[32m||| The Book Of {} {}|||{}\x1b[0m\n",
                         first_letter_to_upper(&name),
                         crate_info.version.unwrap_or_else(|| "".into()),
                         crate_info.warning.unwrap_or_else(|| "".into()),

@@ -17,7 +17,7 @@ pub struct Args {
     manifest: bool,
 
     /// What crate do you need help with, 学生?
-    #[clap(value_name="NAME")]
+    #[clap(value_name = "NAME")]
     name: String,
 
     /// Opens documentation for a specific version

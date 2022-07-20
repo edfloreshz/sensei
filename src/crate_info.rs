@@ -1,6 +1,5 @@
-use crate::Result;
-use clap::ArgMatches;
-use std::borrow::Cow;
+use crate::{Args, Result};
+
 use std::env;
 use std::fs::read_to_string;
 use std::path::Path;
@@ -21,20 +20,20 @@ impl CrateSource {
 }
 
 /// Structure with information about the crate.
-pub struct CrateInfo<'a> {
+pub struct CrateInfo {
     source: CrateSource,
-    version: Option<Cow<'a, str>>,
-    query: Option<&'a str>,
+    version: Option<String>,
+    query: Option<String>,
     warning: Option<String>,
 }
 
-pub fn parse_args<'a>(matches: &'a ArgMatches) -> CrateInfo<'a> {
-    let name = matches.value_of("crate").unwrap().to_lowercase();
-    let query = matches.value_of("query");
+pub fn parse_args(matches: Args) -> CrateInfo {
+    let name = matches.name.to_lowercase();
+    let query = matches.query;
 
-    let version = if matches.is_present("manifest") {
+    let version = if matches.manifest {
         match get_manifest_version(&name) {
-            Ok(version) => Some(Cow::Owned(version)),
+            Ok(version) => Some(version),
             Err(e) => {
                 eprintln!("{}", e);
 
@@ -42,12 +41,12 @@ pub fn parse_args<'a>(matches: &'a ArgMatches) -> CrateInfo<'a> {
             }
         }
     } else {
-        matches.value_of("version").map(|v| Cow::Borrowed(v))
+        matches.version
     };
 
     let (source, warning) = if name == "std" {
         (CrateSource::Std, None)
-    } else if matches.is_present("local") {
+    } else if matches.local {
         (
             CrateSource::Local(name),
             if version.is_some() || query.is_some() {
@@ -82,7 +81,7 @@ fn make_url(crate_info: &CrateInfo) -> String {
                 format!("https://doc.rust-lang.org/stable/std/")
             };
 
-            if let Some(query) = crate_info.query {
+            if let Some(ref query) = crate_info.query {
                 base + &format!("?search={}", query)
             } else {
                 base
@@ -102,7 +101,7 @@ fn make_url(crate_info: &CrateInfo) -> String {
                 format!("https://docs.rs/{}", name)
             };
 
-            if let Some(query) = crate_info.query {
+            if let Some(ref query) = crate_info.query {
                 base + &format!("?search={}", query)
             } else {
                 base

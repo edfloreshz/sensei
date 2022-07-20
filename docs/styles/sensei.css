@@ -6,10 +6,6 @@ body {
   background-color: white;
 }
 
-small {
-  font-size: 0.7em;
-}
-
 footer {
   position: fixed;
   left: 0;
@@ -33,14 +29,13 @@ a {
 }
 
 .container {
-  display: grid;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
   text-align: center;
   font-family: "Monserrat", sans-serif;
   font-size: 1.5rem;
   color: black;
-  margin-bottom: -50px;
-  min-height: 100%;
+  margin: 40px;
 }
 
 h1 {
@@ -48,24 +43,17 @@ h1 {
 }
 
 code {
+  display: flex;
+  align-self: center;
   background-color: #0f151c;
   color: white;
   padding: 10px;
+  margin: 10px;
   border-radius: 10px;
+  max-width: fit-content;
 }
 
-.gif {
-  border: 10px solid #000000;
-  border-radius: 10px;
-  width: 40%;
-  height: 40%;
-}
-
-.push {
-  height: 100px;
-}
-
-.logo {
+#logo {
   background-color: white;
   display: grid;
 }
@@ -90,12 +78,6 @@ code {
   align-items: center;
 }
 
-.space {
-  line-height: 40px;
-  margin-left: 20px;
-  margin-right: 20px;
-}
-
 @keyframes disc {
   form {
     transform: rotateZ(360deg);
@@ -106,10 +88,6 @@ code {
 }
 
 @media (max-width: 850px) {
-  code {
-    font-size: small;
-  }
-
   .vinil {
     animation: disc 3s infinite linear;
     transform-origin: center;
@@ -151,14 +129,5 @@ code {
     width: 8.2vw;
     min-width: 216px;
     transform: translate(-50%, -50%);
-  }
-}
-
-@media (min-width: 1501px) {
-  .gif {
-    border: 10px solid #000000;
-    border-radius: 10px;
-    width: 40%;
-    height: 40%;
   }
 }

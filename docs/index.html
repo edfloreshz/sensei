@@ -91,11 +91,9 @@
     />
     <meta name="theme-color" content="#ffffff" />
   </head>
-
   <body>
-    <br />
     <div class="container">
-      <div class="logo">
+      <div id="logo">
         <div class="cover">
           <img src="assets/cover.svg" alt="sushi" class="sushi" />
         </div>
@@ -103,86 +101,50 @@
           <img src="assets/disco.svg" alt="disco" class="vinil" />
         </div>
       </div>
-
       <h1>SENSEI (先生)</h1>
-      <div class="readme">
-        <div class="space">
-          Sensei is a simple command line tool to open documentation for any
-          crate in
-          <a style="color: black" href="https://crates.io">crates.io</a>.
-        </div>
-      </div>
-      <div class="install">
-        <h3>Installation</h3>
-        <h5>Cargo</h5>
-        <code>cargo install sensei</code><br /><br />
-        <h5>Arch Linux</h5>
-        <code>paru -S sensei-git</code><br /><br />
-      </div>
-      <div class="flags">
-        <small>
-          <div>
-            <h4>Usage</h4>
-            <code>sensei &ltcrate&gt [OPTIONS] [FLAGS]</code>
-            <h4>Options</h4>
-            <code>-v, --version &ltversion&gt</code> <br /><br />
-            Opens documentation for a specific version. <br />
-            <br />
-            <code> -q, --query &ltquery&gt</code> <br />
-            <br />
-            Specifies query to search documentation.
-          </div>
-          <div>
-            <h4>Flags</h4>
-            <code>-h, --help</code> <br /><br />
-            Prints help information. <br />
-            <br />
-            <code>-l, --local</code> <br /><br />
-            Tries to open local documentation. <br />
-            <br />
-          </div>
-          <div>
-            <h4>Example</h4>
-            <code>sensei --help | -h</code> <br /><br />
-            <img class="gif" src="assets/gif/help.gif" alt="help" /><br /><br />
-            <code>sensei &ltcrate&gt --local | -l</code> <br /><br />
-            <img
-              class="gif"
-              src="assets/gif/local.gif"
-              alt="help"
-            /><br /><br />
-            <code>sensei &ltcrate&gt --query | -q &ltquery&gt</code>
-            <br /><br />
-            <img
-              class="gif"
-              src="assets/gif/query.gif"
-              alt="help"
-            /><br /><br />
-            <code>sensei &ltcrate&gt --version | -v &ltversion&gt</code>
-            <br /><br />
-            <img
-              class="gif"
-              src="assets/gif/version.gif"
-              alt="help"
-            /><br /><br />
-            <code>sensei &ltcrate&gt -v &ltversion&gt -q &ltquery&gt</code>
-            <br /><br />
-            <img
-              class="gif"
-              src="assets/gif/verquery.gif"
-              alt="help"
-            /><br /><br />
-          </div>
-        </small>
-      </div>
-      <small style="font-size: x-small"
-        >Thanks to
-        <a style="color: rgb(0, 0, 0)" href="https://t.me/Non_player_character0"
-          >דנטה</a
-        >
-        for maintaing the AUR package.</small
-      >
-      <div class="push"></div>
+      <p>
+        Sensei is a simple command line tool to open documentation for any
+        crate in
+        <a style="color: black" href="https://crates.io">crates.io</a>.
+      </p>
+
+      <h3>Installation</h3>
+      
+      <h5>Cargo</h5>
+      <code>cargo install sensei</code>
+      
+      <h5>Arch Linux</h5>
+      <code>paru -S sensei-git</code>
+      
+      <h4>Usage</h4>
+      <code>sensei &ltcrate&gt [OPTIONS] [FLAGS]</code>
+      
+      <h4>Options</h4>
+      <code>-v, --version &ltversion&gt</code>
+      Opens documentation for a specific version. 
+      <code> -q, --query &ltquery&gt</code> 
+      Specifies query to search documentation.
+      
+      <h4>Flags</h4>
+      <code>-h, --help</code>
+      Prints help information. 
+      <code>-l, --local</code>
+      Tries to open local documentation. 
+      
+      <h4>Examples</h4>
+      <code>sensei --help | -h</code>
+      <code>sensei &ltcrate&gt --local | -l</code>
+      <code>sensei &ltcrate&gt --query | -q &ltquery&gt</code>
+      <code>sensei &ltcrate&gt --version | -v &ltversion&gt</code>
+      <code>sensei &ltcrate&gt -v &ltversion&gt -q &ltquery&gt</code>
+      
+      <h4>Acknowledgements</h4>
+      <p>
+        Thanks to
+        <a style="color: rgb(0, 0, 0)" href="https://t.me/Non_player_character0">Kedap</a>
+        for maintaing the AUR package.
+      </p>
+
     </div>
     <footer>
       <p>
@@ -191,7 +153,5 @@
         <a href="https://crates.io/crates/sensei">Crates.io</a>
       </p>
     </footer>
-
-    <!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-popRpmFF9JQgExhfw5tZT4I9/CI5e2QcuUZPOVXb1m7qUmeR2b50u+YFEYe1wgzy" crossorigin="anonymous"></script>-->
   </body>
 </html>

@@ -153,7 +153,7 @@ pub fn open(crate_info: CrateInfo) -> Result<()> {
 
 /// Get manifest version from Cargo.toml
 fn get_manifest_version(name: &str) -> std::io::Result<String> {
-    let toml = format!("{}/{}", std::env::current_dir()?.display(), "Cargo.toml");
+    let toml = std::env::current_dir()?.join("Cargo.toml");
     let version: String = read_to_string(toml)?
         .lines()
         .filter(|l| l.replace(" ", "").contains(format!("{}=", name).as_str()))

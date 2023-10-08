@@ -12,10 +12,7 @@ enum CrateSource {
 
 impl CrateSource {
     fn is_local(&self) -> bool {
-        match self {
-            &CrateSource::Local(_) => true,
-            _ => false,
-        }
+        matches!(self, &CrateSource::Local(_))
     }
 }
 
@@ -78,7 +75,7 @@ fn make_url(crate_info: &CrateInfo) -> String {
             let base = if let Some(version) = &crate_info.version {
                 format!("https://doc.rust-lang.org/{}/std/", version)
             } else {
-                format!("https://doc.rust-lang.org/stable/std/")
+                "https://doc.rust-lang.org/stable/std/".to_string()
             };
 
             if let Some(ref query) = crate_info.query {
@@ -156,14 +153,14 @@ fn get_manifest_version(name: &str) -> std::io::Result<String> {
     let toml = std::env::current_dir()?.join("Cargo.toml");
     let version: String = read_to_string(toml)?
         .lines()
-        .filter(|l| l.replace(" ", "").contains(format!("{}=", name).as_str()))
+        .filter(|l| l.replace(' ', "").contains(format!("{}=", name).as_str()))
         .collect();
     Ok(version.trim_matches(|c: char| !c.is_numeric()).to_string())
 }
 
 /// Converts the first letter of a crate's name to upper case.
 fn first_letter_to_upper(c: &str) -> String {
-    if c.len() > 0 {
+    if !c.is_empty() {
         format!("{}{}", &c[0..1].to_uppercase(), &c[1..])
     } else {
         c.to_string()

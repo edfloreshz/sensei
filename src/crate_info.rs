@@ -3,6 +3,7 @@ use crate::{Args, Result};
 use std::env;
 use std::fs::read_to_string;
 use std::path::Path;
+use std::process::Command;
 
 enum CrateSource {
     Std,
@@ -138,7 +139,18 @@ pub fn open(crate_info: CrateInfo) -> Result<()> {
         }
         Err(e) => {
             if crate_info.source.is_local() && !is_locally_available(&url) {
-                println!("The crate is not available locally");
+                println!("Trying to build the documentation locally...");
+                let build_local_doc = Command::new("cargo").arg("doc").status();
+                match build_local_doc {
+                    Ok(status) => {
+                        if status.success() && is_locally_available(&url) {
+                            return open(crate_info);
+                        } else {
+                            println!("The crate is not available locally")
+                        }
+                    }
+                    Err(build_error) => println!("Oh no {}!", build_error),
+                }
             } else {
                 println!("Seems like you've lost your way, 学生, try again.");
             }
